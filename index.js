@@ -9,7 +9,7 @@
 // Dependencies
 import http from 'http';
 
-// App object - module scaffolding
+// App Object - Module Scaffolding
 const app = {};
 
 // Configuration
@@ -17,7 +17,7 @@ app.config = {
     port: 3000,
 };
 
-// Create server
+// Create Server
 app.createServer = () => {
     const server = http.createServer(app.handleReqRes);
     server.listen(app.config.port, () => {
@@ -25,15 +25,20 @@ app.createServer = () => {
     });
 };
 
-// Handle request response
+// Handle Request and Response
 app.handleReqRes = (req, res) => {
-    // response handle
-    res.write("Hi Kishor, I'm from Node JS.\n");
-    res.write('I will first finish All of from Sumit vai\n');
-    res.write('then Fayzul Karim Vai, then HM Naym Vai\n');
-    res.write('then I will start learning AWS from Avisek\n');
-    res.write('then I will start learning Blockchain from learnweb3.0\n');
-    res.end('Hello World of Programming Kishor !!!');
+    res.writeHead(200, {
+        'Content-Type': 'text/plain',
+    });
+    res.write(`
+Hi Kishor, I'm from Node JS.
+I will first finish All of from Sumit vai
+then Fayzul Karim Vai, then HM Naym Vai
+then I will start learning AWS from Avisek
+then I will start learning Blockchain from learnweb3.0
+Hello World of Programming Kishor !!!
+`);
+    res.end('Hello World KKP!!!');
 };
 
 // Start the server
