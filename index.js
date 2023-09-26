@@ -8,6 +8,7 @@
 
 // Dependencies
 import http from 'http';
+import url from 'url';
 
 // App Object - Module Scaffolding
 const app = {};
@@ -27,17 +28,28 @@ app.createServer = () => {
 
 // Handle Request and Response
 app.handleReqRes = (req, res) => {
-    res.writeHead(200, {
-        'Content-Type': 'text/plain',
-    });
-    res.write(`
-Hi Kishor, I'm from Node JS.
-I will first finish All of from Sumit vai
-then Fayzul Karim Vai, then HM Naym Vai
-then I will start learning AWS from Avisek
-then I will start learning Blockchain from learnweb3.0
-Hello World of Programming Kishor !!!
-`);
+    // request handling
+    // get the url and parse it
+    const q = req.url;
+    const parsedUrl = url.parse(req.url, true);
+    console.log(q);
+    console.log(parsedUrl);
+
+    // get the path
+    const path = parsedUrl.pathname;
+    const trimmedPath = path.replace(/^\/+|\/+$/g, '');
+    console.log(trimmedPath);
+
+    const method = req.method.toLowerCase();
+    console.log(method);
+
+    // get the query string as an object
+    const queryStringObject = parsedUrl.query;
+    console.log(queryStringObject);
+
+    // get the query headers as an object
+    const headersObject = req.headers;
+    console.log(headersObject);
 
     // response handle
     res.end('Hello World KKP!!!');
