@@ -12,3 +12,5 @@ const handler = {};
 handler.sampleHandler = () => {
     console.log('Sample');
 };
+// export module
+export default handler;

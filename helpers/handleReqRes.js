@@ -9,6 +9,7 @@
 // Dependencies
 import { StringDecoder } from 'string_decoder';
 import url from 'url';
+import routes from '../routes.js';
 
 // App Object - Module Scaffolding
 const handler = {};
@@ -25,6 +26,9 @@ handler.handleReqRes = (req, res) => {
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/g, '');
     console.log(trimmedPath);
+
+    const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : routes.notFound;
+    console.log('chosenHandler : ', chosenHandler);
 
     const method = req.method.toLowerCase();
     console.log(method);
