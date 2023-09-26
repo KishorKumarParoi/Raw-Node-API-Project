@@ -8,6 +8,7 @@
 
 // Dependencies
 import http from 'http';
+import { StringDecoder } from 'string_decoder';
 import url from 'url';
 
 // App Object - Module Scaffolding
@@ -51,8 +52,20 @@ app.handleReqRes = (req, res) => {
     const headersObject = req.headers;
     console.log(headersObject);
 
-    // response handle
-    res.end('Hello World KKP!!!');
+    // string decoder
+    const decoder = new StringDecoder('utf-8');
+    let realData = '';
+
+    req.on('data', (buffer) => {
+        realData += decoder.write(buffer);
+    });
+
+    req.on('end', () => {
+        realData += decoder.end();
+        console.log(realData);
+        // response handle
+        res.end('Hello World KKP!!!');
+    });
 };
 
 // Start the server
