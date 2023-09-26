@@ -27,9 +27,6 @@ handler.handleReqRes = (req, res) => {
     const trimmedPath = path.replace(/^\/+|\/+$/g, '');
     console.log(trimmedPath);
 
-    const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : routes.notFound;
-    console.log('chosenHandler : ', chosenHandler);
-
     const method = req.method.toLowerCase();
     console.log(method);
 
@@ -40,6 +37,32 @@ handler.handleReqRes = (req, res) => {
     // get the query headers as an object
     const headersObject = req.headers;
     console.log(headersObject);
+
+    // request properties
+    const requestProperties = {
+        parsedUrl,
+        path,
+        trimmedPath,
+        query: parsedUrl.query,
+        method: req.method.toLowerCase(),
+        headers: req.headers,
+    };
+
+    const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : routes.notFound;
+    console.log('chosenHandler : ', chosenHandler);
+
+    chosenHandler(requestProperties, (statusCode, payload) => {
+        let insideStatusCode = statusCode;
+        let insidePayload = payload;
+        insideStatusCode = typeof statusCode === 'number' ? insideStatusCode : 500;
+        insidePayload = typeof payload === 'object' ? insidePayload : {};
+
+        const payloadString = JSON.stringify(insidePayload);
+
+        // return the final response
+        res.writeHead(insideStatusCode);
+        res.end(payloadString);
+    });
 
     // string decoder
     const decoder = new StringDecoder('utf-8');
