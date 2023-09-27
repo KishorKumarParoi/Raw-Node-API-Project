@@ -8,22 +8,18 @@
 
 // Dependencies
 import http from 'http';
+import environment from './helpers/environmentVariables.js';
 import handler from './helpers/handleReqRes.js';
 
 // App Object - Module Scaffolding
 const app = {};
 
-// Configuration
-app.config = {
-    port: 3000,
-};
-
 // Create Server
 app.createServer = () => {
     const server = http.createServer(app.handleReqRes);
-    server.listen(app.config.port, () => {
-        console.log('Environment variable : ', process.env.NODE_ENV);
-        console.log(`Listening to port ${app.config.port}`);
+    server.listen(environment.port, () => {
+        console.log('Environment variable : ', environment.port);
+        console.log(`Listening to port ${environment.port}`);
     });
 };
 
