@@ -7,7 +7,7 @@
  */
 
 // dependencies
-import handler from './handlers/routeHandlers/noHandler.js';
+import handler from './handlers/routeHandlers/notFoundHandler.js';
 import handler2 from './handlers/routeHandlers/sampleHandler.js';
 // module scaffolding
 const routes = {
