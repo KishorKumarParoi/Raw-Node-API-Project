@@ -25,6 +25,6 @@ app.createServer = () => {
 
 // Handle Request and Response
 app.handleReqRes = handler.handleReqRes;
-
+console.log('process.cwd() : ', process.cwd());
 // Start the server
 app.createServer();
