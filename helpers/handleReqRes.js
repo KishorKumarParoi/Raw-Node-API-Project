@@ -51,19 +51,6 @@ handler.handleReqRes = (req, res) => {
     const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : routes.notFound;
     console.log('chosenHandler : ', chosenHandler);
 
-    chosenHandler(requestProperties, (statusCode, payload) => {
-        let insideStatusCode = statusCode;
-        let insidePayload = payload;
-        insideStatusCode = typeof statusCode === 'number' ? insideStatusCode : 500;
-        insidePayload = typeof payload === 'object' ? insidePayload : {};
-
-        const payloadString = JSON.stringify(insidePayload);
-
-        // return the final response
-        res.writeHead(insideStatusCode);
-        res.end(payloadString);
-    });
-
     // string decoder
     const decoder = new StringDecoder('utf-8');
     let realData = '';
@@ -75,6 +62,20 @@ handler.handleReqRes = (req, res) => {
     req.on('end', () => {
         realData += decoder.end();
         console.log(realData);
+
+        chosenHandler(requestProperties, (statusCode, payload) => {
+            let insideStatusCode = statusCode;
+            let insidePayload = payload;
+            insideStatusCode = typeof statusCode === 'number' ? insideStatusCode : 500;
+            insidePayload = typeof payload === 'object' ? insidePayload : {};
+
+            const payloadString = JSON.stringify(insidePayload);
+
+            // return the final response
+            res.writeHead(insideStatusCode);
+            res.end(payloadString);
+        });
+
         // response handle
         res.end('Hello World KKP!!!');
     });
