@@ -43,6 +43,7 @@ data.update(
         name: 'Kishor Kumar Paroi',
         age: 24,
         dream: 'AI Developer',
+        salary: '1M Dollar',
     },
     (err) => {
         console.log(err);
