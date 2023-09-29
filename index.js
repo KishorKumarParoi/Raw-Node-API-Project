@@ -19,8 +19,21 @@ const app = {};
 console.log(data);
 console.log(process.cwd);
 
-data.create('test', 'newFile', { name: 'Kishor', title: 'Paroi' }, (err) => {
-    console.log(err, 'Kishor');
+data.create(
+    'test',
+    'newFile',
+    {
+        name: 'Kishor',
+        title: 'Paroi',
+        middleName: 'Kumar',
+    },
+    (err) => {
+        console.log(err, 'Kishor');
+    }
+);
+
+data.read('test', 'newFile', (err, info) => {
+    console.log(err, info);
 });
 
 // Create Server
