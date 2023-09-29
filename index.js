@@ -10,9 +10,18 @@
 import http from 'http';
 import environment from './helpers/environmentVariables.js';
 import handler from './helpers/handleReqRes.js';
+import data from './lib/data.js';
 
 // App Object - Module Scaffolding
 const app = {};
+// ! To Do : Delete kore dite hobe test korar pore
+// Testing Purpose
+console.log(data);
+console.log(process.cwd);
+
+data.create('test', 'newFile', { name: 'Kishor', title: 'Paroi' }, (err) => {
+    console.log(err, 'Kishor');
+});
 
 // Create Server
 app.createServer = () => {
