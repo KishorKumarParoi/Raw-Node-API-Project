@@ -50,7 +50,7 @@ data.read('test', 'newFile', (err, result) => {
 //     }
 // );
 
-data.delete('text', 'newFile', (err) => {
+data.delete('test', 'newFile', (err) => {
     console.log(err);
 });
 
