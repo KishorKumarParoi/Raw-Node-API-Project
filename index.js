@@ -19,36 +19,40 @@ const app = {};
 console.log(data);
 console.log(process.cwd);
 
-data.create(
-    'test',
-    'newFile',
-    {
-        name: 'Kishor',
-        title: 'Paroi',
-        middleName: 'Kumar',
-    },
-    (err) => {
-        console.log(err, 'Kishor');
-    }
-);
+// data.create(
+//     'test',
+//     'newFile',
+//     {
+//         name: 'Kishor',
+//         title: 'Paroi',
+//         middleName: 'Kumar',
+//     },
+//     (err) => {
+//         console.log(err, 'Kishor');
+//     }
+// );
 
-data.read('test', 'newFile', (err, info) => {
-    console.log(err, info);
+data.read('test', 'newFile', (err, result) => {
+    console.log(err, result);
 });
 
-data.update(
-    'test',
-    'newFile',
-    {
-        name: 'Kishor Kumar Paroi',
-        age: 24,
-        dream: 'AI Developer',
-        salary: '1M Dollar',
-    },
-    (err) => {
-        console.log(err);
-    }
-);
+// data.update(
+//     'test',
+//     'newFile',
+//     {
+//         name: 'Kishor Kumar Paroi',
+//         age: 24,
+//         dream: 'AI Developer',
+//         salary: '1M Dollar',
+//     },
+//     (err) => {
+//         console.log(err);
+//     }
+// );
+
+data.delete('text', 'newFile', (err) => {
+    console.log(err);
+});
 
 // Create Server
 app.createServer = () => {
