@@ -36,6 +36,19 @@ data.read('test', 'newFile', (err, info) => {
     console.log(err, info);
 });
 
+data.update(
+    'test',
+    'newFile',
+    {
+        name: 'Kishor Kumar Paroi',
+        age: 24,
+        dream: 'AI Developer',
+    },
+    (err) => {
+        console.log(err);
+    }
+);
+
 // Create Server
 app.createServer = () => {
     const server = http.createServer(app.handleReqRes);
