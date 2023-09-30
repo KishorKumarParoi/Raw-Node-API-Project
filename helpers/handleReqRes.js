@@ -43,28 +43,17 @@ handler.handleReqRes = (req, res) => {
         parsedUrl,
         path,
         trimmedPath,
-        query: parsedUrl.query,
-        method: req.method.toLowerCase(),
-        headers: req.headers,
+        method,
+        queryStringObject,
+        headersObject,
     };
 
     const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : routes.notFound;
     console.log('chosenHandler : ', chosenHandler);
-    chosenHandler(requestProperties, (statusCode, payload) => {
-        let insideStatusCode = statusCode;
-        let insidePayload = payload;
-        insideStatusCode = typeof statusCode === 'number' ? insideStatusCode : 500;
-        insidePayload = typeof payload === 'object' ? insidePayload : {};
 
-        const payloadString = JSON.stringify(insidePayload);
-
-        // return the final response
-        res.writeHead(insideStatusCode);
-        res.end(payloadString);
-    });
+    let realData = '';
     // string decoder
     const decoder = new StringDecoder('utf-8');
-    let realData = '';
 
     req.on('data', (buffer) => {
         realData += decoder.write(buffer);
@@ -73,9 +62,19 @@ handler.handleReqRes = (req, res) => {
     req.on('end', () => {
         realData += decoder.end();
         console.log(realData);
+        chosenHandler(requestProperties, (statusCode, payload) => {
+            let insideStatusCode = statusCode;
+            let insidePayload = payload;
+            insideStatusCode = typeof statusCode === 'number' ? insideStatusCode : 500;
+            insidePayload = typeof payload === 'object' ? insidePayload : {};
 
-        // response handle
-        res.end('Hello World KKP!!!');
+            const payloadString = JSON.stringify(insidePayload);
+
+            // return the final response
+            res.setHeader('Content-Type', 'application/json');
+            res.writeHead(insideStatusCode);
+            res.end(payloadString);
+        });
     });
 };
 

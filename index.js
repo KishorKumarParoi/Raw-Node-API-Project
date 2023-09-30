@@ -50,9 +50,9 @@ data.read('test', 'newFile', (err, result) => {
 //     }
 // );
 
-data.delete('test', 'newFile', (err) => {
-    console.log(err);
-});
+// data.delete('test', 'newFile', (err) => {
+//     console.log(err);
+// });
 
 // Create Server
 app.createServer = () => {
