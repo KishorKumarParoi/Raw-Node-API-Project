@@ -61,7 +61,8 @@ handler.handleReqRes = (req, res) => {
 
     req.on('end', () => {
         realData += decoder.end();
-        console.log(realData);
+        console.log('realdata : ', realData);
+
         chosenHandler(requestProperties, (statusCode, payload) => {
             let insideStatusCode = statusCode;
             let insidePayload = payload;
