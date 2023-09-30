@@ -9,10 +9,12 @@
 // dependencies
 import handler from './handlers/routeHandlers/notFoundHandler.js';
 import handler2 from './handlers/routeHandlers/sampleHandler.js';
+import handler3 from './handlers/routeHandlers/userHandler.js';
 // module scaffolding
 const routes = {
     sample: handler2.sampleHandler,
     notFound: handler.noHandler,
+    user: handler3.userHandler,
 };
 
 // export module
