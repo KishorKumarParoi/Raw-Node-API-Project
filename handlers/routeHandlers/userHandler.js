@@ -14,22 +14,25 @@ const handler = {};
 handler.userHandler = (requestProperties, callback) => {
     console.log(requestProperties);
     const acceptedMethods = ['get', 'post', 'put', 'delete'];
-    if (acceptedMethods.has(requestProperties.method)) {
-        handler._user[requestProperties.method](requestProperties, callback);
+    if (acceptedMethods.includes(requestProperties.method)) {
+        handler._users[requestProperties.method](requestProperties, callback);
     } else {
-        callback(405);
+        callback(405, {
+            message: "Can't get User",
+        });
     }
-    callback(200, {
-        message: 'This is user URL',
-    });
 };
 
 handler._users = {};
 handler._users.post = (requestProperties, callback) => {
-    callback(500);
+    callback(500, {
+        message: 'Posted',
+    });
 };
 handler._users.get = (requestProperties, callback) => {
-    callback(200);
+    callback(200, {
+        message: 'Hello World',
+    });
 };
 handler._users.put = (requestProperties, callback) => {
     callback(100);
