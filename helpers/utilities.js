@@ -7,6 +7,7 @@
  */
 
 // dependencies
+import hash from 'crypto';
 
 // module scaffolding
 const utilities = {};
@@ -14,9 +15,11 @@ const utilities = {};
 // parse json string to object
 
 utilities.parseJSON = (jsonString) => {
+    console.log('🚀 ~ file: utilities.js:18 ~ jsonString:', jsonString);
     let output;
     try {
         output = JSON.parse(jsonString);
+        console.log('🚀 ~ file: utilities.js:21 ~ output:', output);
     } catch {
         output = {};
     }
@@ -24,5 +27,7 @@ utilities.parseJSON = (jsonString) => {
     return output;
 };
 
+// hash making
+console.log('🚀 ~ file: utilities.js:30 ~ hash:', hash);
 // export module
 export default utilities;

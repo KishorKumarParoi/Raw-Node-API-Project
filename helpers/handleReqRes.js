@@ -10,6 +10,7 @@
 import { StringDecoder } from 'string_decoder';
 import url from 'url';
 import routes from '../routes.js';
+import utilities from './utilities.js';
 
 // App Object - Module Scaffolding
 const handler = {};
@@ -63,7 +64,7 @@ handler.handleReqRes = (req, res) => {
         realData += decoder.end();
         // console.log('realdata : ', realData);
 
-        requestProperties.body = realData;
+        requestProperties.body = utilities.parseJSON(realData);
         // console.log('RequestProperties : ', requestProperties);
 
         chosenHandler(requestProperties, (statusCode, payload) => {
