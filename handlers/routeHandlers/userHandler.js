@@ -13,7 +13,7 @@ import data from '../../lib/data.js';
 const handler = {};
 
 handler.userHandler = (requestProperties, callback) => {
-    console.log(requestProperties);
+    // console.log(requestProperties);
     const acceptedMethods = ['get', 'post', 'put', 'delete'];
     if (acceptedMethods.includes(requestProperties.method)) {
         handler._users[requestProperties.method](requestProperties, callback);
@@ -53,15 +53,19 @@ handler._users.post = (requestProperties, callback) => {
             ? requestProperties.body.tosAgreement
             : false;
 
+    console.log('Handler-requestProperties : ', requestProperties);
+
     if (firstName && lastName && phone && password && tosAgreement) {
         // make sure the user data doesn't already exist
-        data.read('user', 'phone', (err, user) => {
+        data.read('user', phone, (err, user) => {
+            console.log('user : ', user);
             if (err) {
                 const userObject = {
                     firstName,
                     lastName,
                     phone,
                     password,
+                    tosAgreement,
                 };
 
                 callback(200, {

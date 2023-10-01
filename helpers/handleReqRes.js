@@ -17,26 +17,26 @@ const handler = {};
 handler.handleReqRes = (req, res) => {
     // request handling
     // get the url and parse it
-    const q = req.url;
+    // const q = req.url;
     const parsedUrl = url.parse(req.url, true);
-    console.log(q);
-    console.log(parsedUrl);
+    // console.log(q);
+    // console.log(parsedUrl);
 
     // get the path
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/g, '');
-    console.log(trimmedPath);
+    // console.log(trimmedPath);
 
     const method = req.method.toLowerCase();
-    console.log(method);
+    // console.log(method);
 
     // get the query string as an object
     const queryStringObject = parsedUrl.query;
-    console.log(queryStringObject);
+    // console.log(queryStringObject);
 
     // get the query headers as an object
     const headersObject = req.headers;
-    console.log(headersObject);
+    // console.log(headersObject);
 
     // request properties
     const requestProperties = {
@@ -49,7 +49,7 @@ handler.handleReqRes = (req, res) => {
     };
 
     const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : routes.notFound;
-    console.log('chosenHandler : ', chosenHandler);
+    // console.log('chosenHandler : ', chosenHandler);
 
     let realData = '';
     // string decoder
@@ -61,10 +61,10 @@ handler.handleReqRes = (req, res) => {
 
     req.on('end', () => {
         realData += decoder.end();
-        console.log('realdata : ', realData);
+        // console.log('realdata : ', realData);
 
         requestProperties.body = realData;
-        console.log('RequestProperties : ', requestProperties);
+        // console.log('RequestProperties : ', requestProperties);
 
         chosenHandler(requestProperties, (statusCode, payload) => {
             let insideStatusCode = statusCode;
