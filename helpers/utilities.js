@@ -16,11 +16,12 @@ const utilities = {};
 
 utilities.parseJSON = (jsonString) => {
     console.log('🚀 ~ file: utilities.js:18 ~ jsonString:', jsonString);
-    let output;
+    let output = {};
     try {
         output = JSON.parse(jsonString);
         console.log('🚀 ~ file: utilities.js:21 ~ output:', output);
     } catch {
+        console.log('kkp');
         output = {};
     }
 

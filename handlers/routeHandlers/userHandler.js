@@ -48,17 +48,16 @@ handler._users.post = (requestProperties, callback) => {
             ? requestProperties.body.password
             : false;
     const tosAgreement =
-        typeof requestProperties.body.tosAgreement === 'string' &&
-        requestProperties.body.tosAgreement.trim().length > 0
+        typeof requestProperties.body.tosAgreement === 'boolean'
             ? requestProperties.body.tosAgreement
             : false;
 
     console.log('Handler-requestProperties : ', requestProperties);
+    console.log(firstName, lastName, phone, password, tosAgreement);
 
     if (firstName && lastName && phone && password && tosAgreement) {
         // make sure the user data doesn't already exist
-        data.read('user', phone, (err, user) => {
-            console.log('user : ', user);
+        data.read('user', phone, (err) => {
             if (err) {
                 const userObject = {
                     firstName,
@@ -71,7 +70,6 @@ handler._users.post = (requestProperties, callback) => {
                 callback(200, {
                     message: 'All Ok',
                     object: userObject,
-                    info: user,
                 });
             } else {
                 callback(500, {
