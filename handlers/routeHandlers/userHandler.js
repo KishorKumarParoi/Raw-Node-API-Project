@@ -7,6 +7,7 @@
  */
 
 // dependencies
+import data from '../../lib/data.js';
 
 // module scaffolding
 const handler = {};
@@ -25,9 +26,60 @@ handler.userHandler = (requestProperties, callback) => {
 
 handler._users = {};
 handler._users.post = (requestProperties, callback) => {
-    callback(500, {
-        message: 'Posted',
-    });
+    const firstName =
+        typeof requestProperties.body.firstName === 'string' &&
+        requestProperties.body.firstName.trim().length > 0
+            ? requestProperties.body.firstName
+            : false;
+    const lastName =
+        typeof requestProperties.body.lastName === 'string' &&
+        requestProperties.body.lastName.trim().length > 0
+            ? requestProperties.body.lastName
+            : false;
+    const phone =
+        typeof requestProperties.body.phone === 'string' &&
+        requestProperties.body.phone.trim().length === 11
+            ? requestProperties.body.phone
+            : false;
+
+    const password =
+        typeof requestProperties.body.password === 'string' &&
+        requestProperties.body.password.trim().length > 0
+            ? requestProperties.body.password
+            : false;
+    const tosAgreement =
+        typeof requestProperties.body.tosAgreement === 'string' &&
+        requestProperties.body.tosAgreement.trim().length > 0
+            ? requestProperties.body.tosAgreement
+            : false;
+
+    if (firstName && lastName && phone && password && tosAgreement) {
+        // make sure the user data doesn't already exist
+        data.read('user', 'phone', (err, user) => {
+            if (err) {
+                const userObject = {
+                    firstName,
+                    lastName,
+                    phone,
+                    password,
+                };
+
+                callback(200, {
+                    message: 'All Ok',
+                    object: userObject,
+                    info: user,
+                });
+            } else {
+                callback(500, {
+                    error: 'There was an error from server side',
+                });
+            }
+        });
+    } else {
+        callback(400, {
+            error: 'You have a problem in your request',
+        });
+    }
 };
 handler._users.get = (requestProperties, callback) => {
     callback(200, {
