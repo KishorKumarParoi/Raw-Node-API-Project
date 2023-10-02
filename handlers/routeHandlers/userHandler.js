@@ -79,23 +79,23 @@ handler._users.post = (requestProperties, callback) => {
                     }
                 });
             } else {
-                data.update(
-                    'users',
-                    phone,
-                    {
-                        firstName: 'Pallabi',
-                        lastName: 'Karmaker',
-                        phone: '01775293579',
-                        password: 'securePassword123',
-                        tosAgreement: true,
-                    },
-                    (err4) => {
-                        console.log(
-                            '🚀 ~ file: userHandler.js:93 ~ data.read ~ err4: Error Happened',
-                            err4
-                        );
-                    }
-                );
+                // data.update(
+                //     'users',
+                //     phone,
+                //     {
+                //         firstName: 'Pallabi',
+                //         lastName: 'Karmaker',
+                //         phone: '01775293579',
+                //         password: 'securePassword123',
+                //         tosAgreement: true,
+                //     },
+                //     (err4) => {
+                //         console.log(
+                //             '🚀 ~ file: userHandler.js:93 ~ data.read ~ err4: Error Happened',
+                //             err4
+                //         );
+                //     }
+                // );
 
                 // if data exists delete data
                 // data.delete('user', phone, (err2) => {
@@ -114,12 +114,18 @@ handler._users.post = (requestProperties, callback) => {
     }
 };
 handler._users.get = (requestProperties, callback) => {
+    console.log('🚀 ~ file: userHandler.js:117 ~ requestProperties:', requestProperties);
     // check if the phone number is valid
+    console.log(
+        '🚀 ~ file: userHandler.js:119 ~ queryStringObject:',
+        requestProperties.queryStringObject
+    );
     const phone =
-        typeof requestProperties.body.phone === 'string' &&
-        requestProperties.body.phone.trim().length === 11
-            ? requestProperties.body.phone
+        typeof requestProperties.queryStringObject.phone === 'string' &&
+        requestProperties.queryStringObject.phone.trim().length === 11
+            ? requestProperties.queryStringObject.phone
             : false;
+    console.log('🚀 ~ file: userHandler.js:129 ~ phone:', phone);
 
     // lookup the user
     if (phone) {
@@ -139,10 +145,6 @@ handler._users.get = (requestProperties, callback) => {
             error: 'Requested URL not found',
         });
     }
-
-    callback(200, {
-        message: 'Hello World KKP!',
-    });
 };
 handler._users.put = (requestProperties, callback) => {
     callback(100);
