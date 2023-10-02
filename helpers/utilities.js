@@ -7,7 +7,8 @@
  */
 
 // dependencies
-import hash from 'crypto';
+import * as crypto from 'crypto';
+import environment from './environmentVariables.js';
 
 // module scaffolding
 const utilities = {};
@@ -29,6 +30,12 @@ utilities.parseJSON = (jsonString) => {
 };
 
 // hash making
-console.log('🚀 ~ file: utilities.js:30 ~ hash:', hash);
+utilities.hash = (str) => {
+    if (typeof str === 'string' && str.length > 0) {
+        const hash = crypto.createHmac('sha256', environment.secretKey).update(str).digest('hex');
+        console.log('🚀 ~ file: utilities.js:36 ~ hash :', hash);
+    }
+};
+
 // export module
 export default utilities;
