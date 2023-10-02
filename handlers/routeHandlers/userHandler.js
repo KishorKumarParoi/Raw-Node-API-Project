@@ -7,8 +7,8 @@
  */
 
 // dependencies
+import utilities from '../../helpers/utilities.js';
 import data from '../../lib/data.js';
-
 // module scaffolding
 const handler = {};
 
@@ -63,13 +63,19 @@ handler._users.post = (requestProperties, callback) => {
                     firstName,
                     lastName,
                     phone,
-                    password,
+                    password: utilities.hash(password),
                     tosAgreement,
                 };
 
-                callback(200, {
-                    message: 'All Ok',
-                    object: userObject,
+                // storing data to database
+                data.create('user', phone, userObject, (err2) => {
+                    if (!err2) {
+                        console.log('User is created successfully');
+                    } else {
+                        callback(500, {
+                            error: 'Could not create user',
+                        });
+                    }
                 });
             } else {
                 callback(500, {
@@ -85,7 +91,7 @@ handler._users.post = (requestProperties, callback) => {
 };
 handler._users.get = (requestProperties, callback) => {
     callback(200, {
-        message: 'Hello World',
+        message: 'Hello World KKP!',
     });
 };
 handler._users.put = (requestProperties, callback) => {
