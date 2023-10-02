@@ -9,6 +9,7 @@
 // dependencies
 import utilities from '../../helpers/utilities.js';
 import data from '../../lib/data.js';
+
 // module scaffolding
 const handler = {};
 
@@ -57,7 +58,7 @@ handler._users.post = (requestProperties, callback) => {
 
     if (firstName && lastName && phone && password && tosAgreement) {
         // make sure the user data doesn't already exist
-        data.read('user', phone, (err) => {
+        data.read('users', phone, (err) => {
             if (err) {
                 const userObject = {
                     firstName,
@@ -68,7 +69,7 @@ handler._users.post = (requestProperties, callback) => {
                 };
 
                 // storing data to database
-                data.create('user', phone, userObject, (err2) => {
+                data.create('users', phone, userObject, (err2) => {
                     if (!err2) {
                         console.log('User is created successfully');
                     } else {
@@ -79,7 +80,7 @@ handler._users.post = (requestProperties, callback) => {
                 });
             } else {
                 data.update(
-                    'user',
+                    'users',
                     phone,
                     {
                         firstName: 'Pallabi',
@@ -113,6 +114,32 @@ handler._users.post = (requestProperties, callback) => {
     }
 };
 handler._users.get = (requestProperties, callback) => {
+    // check if the phone number is valid
+    const phone =
+        typeof requestProperties.body.phone === 'string' &&
+        requestProperties.body.phone.trim().length === 11
+            ? requestProperties.body.phone
+            : false;
+
+    // lookup the user
+    if (phone) {
+        data.read('users', phone, (err, u) => {
+            const user = { ...utilities.parseJSON(u) };
+            if (!err && user) {
+                delete user.password;
+                callback(200, user);
+            } else {
+                callback(404, {
+                    error: 'Requested user not found in server',
+                });
+            }
+        });
+    } else {
+        callback(404, {
+            error: 'Requested URL not found',
+        });
+    }
+
     callback(200, {
         message: 'Hello World KKP!',
     });
