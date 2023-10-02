@@ -56,6 +56,11 @@ handler._users.post = (requestProperties, callback) => {
     console.log(firstName, lastName, phone, password, tosAgreement);
 
     if (firstName && lastName && phone && password && tosAgreement) {
+        // if data exists delete data
+        data.delete('user', phone, (err) => {
+            console.log(err);
+        });
+
         // make sure the user data doesn't already exist
         data.read('user', phone, (err) => {
             if (err) {
