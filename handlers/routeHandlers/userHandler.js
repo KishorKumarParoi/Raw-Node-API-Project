@@ -56,11 +56,6 @@ handler._users.post = (requestProperties, callback) => {
     console.log(firstName, lastName, phone, password, tosAgreement);
 
     if (firstName && lastName && phone && password && tosAgreement) {
-        // if data exists delete data
-        data.delete('user', phone, (err) => {
-            console.log(`deleted ${phone} data : `, err);
-        });
-
         // make sure the user data doesn't already exist
         data.read('user', phone, (err) => {
             if (err) {
@@ -83,6 +78,29 @@ handler._users.post = (requestProperties, callback) => {
                     }
                 });
             } else {
+                data.update(
+                    'user',
+                    phone,
+                    {
+                        firstName: 'Pallabi',
+                        lastName: 'Karmaker',
+                        phone: '01775293579',
+                        password: 'securePassword123',
+                        tosAgreement: true,
+                    },
+                    (err4) => {
+                        console.log(
+                            '🚀 ~ file: userHandler.js:93 ~ data.read ~ err4: Error Happened',
+                            err4
+                        );
+                    }
+                );
+
+                // if data exists delete data
+                // data.delete('user', phone, (err2) => {
+                //     console.log(`deleted ${phone} data : `, err2);
+                // });
+
                 callback(500, {
                     error: 'There was an error from server side',
                 });

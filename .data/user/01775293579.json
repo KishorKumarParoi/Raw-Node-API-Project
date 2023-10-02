@@ -1,1 +1,7 @@
-{"firstName":"Pallabi","lastName":"Paroi","phone":"01775293579","tosAgreement":true}
+{
+  "firstName": "Pallabi",
+  "lastName": "Karmaker",
+  "phone": "01775293579",
+  "password": "securePassword123",
+  "tosAgreement": true
+}
