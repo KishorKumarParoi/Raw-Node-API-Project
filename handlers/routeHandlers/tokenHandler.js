@@ -46,10 +46,10 @@ handler._tokens.post = (requestProperties, callback) => {
 
     if (phone && password) {
         data.read('users', phone, (err1, uData) => {
-            const userData = { ...utilities.parseJSON(uData) };
+            const userData = uData;
             const hashedPassword = utilities.hash(password);
 
-            if (hashedPassword === userData.password) {
+            if (hashedPassword === utilities.parseJSON(userData).password) {
                 const tokenId = utilities.createRandomString(36);
                 const expires = Date.now() + 60 * 60 * 1000;
                 const tokenObject = {
