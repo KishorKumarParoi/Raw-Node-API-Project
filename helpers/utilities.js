@@ -31,10 +31,12 @@ utilities.parseJSON = (jsonString) => {
 
 // hash making
 utilities.hash = (str) => {
+    let hash;
     if (typeof str === 'string' && str.length > 0) {
-        const hash = crypto.createHmac('sha256', environment.secretKey).update(str).digest('hex');
+        hash = crypto.createHmac('sha256', environment.secretKey).update(str).digest('hex');
         console.log('🚀 ~ file: utilities.js:36 ~ hash :', hash);
     }
+    return hash;
 };
 
 // export module
