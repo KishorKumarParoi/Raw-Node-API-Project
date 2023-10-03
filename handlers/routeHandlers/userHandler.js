@@ -137,7 +137,7 @@ handler._users.get = (requestProperties, callback) => {
             const user = { ...utilities.parseJSON(u) };
             console.log('🚀 ~ file: userHandler.js:138 ~ data.read ~ user:', user);
             if (!err && user) {
-                // delete user.password;
+                delete user.password;
                 callback(200, user);
             } else {
                 callback(404, {
