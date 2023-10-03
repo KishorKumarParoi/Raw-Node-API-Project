@@ -118,7 +118,7 @@ handler._users.post = (requestProperties, callback) => {
         });
     }
 };
-// TODO: Authentication
+// @FIXME: Authentication
 handler._users.get = (requestProperties, callback) => {
     console.log('🚀 ~ file: userHandler.js:117 ~ requestProperties:', requestProperties);
     // check if the phone number is valid
@@ -154,7 +154,7 @@ handler._users.get = (requestProperties, callback) => {
     }
 };
 
-// TODO: Authentication
+// @TODO: Authentication
 handler._users.put = (requestProperties, callback) => {
     console.log('🚀 ~ file: userHandler.js:155 ~ requestProperties:', requestProperties);
     const firstName =
@@ -225,7 +225,7 @@ handler._users.put = (requestProperties, callback) => {
     }
 };
 
-// TODO: Authentication
+// @TODO: Authentication
 handler._users.delete = (requestProperties, callback) => {
     const phone =
         typeof requestProperties.queryStringObject.phone === 'string' &&
