@@ -31,12 +31,30 @@ utilities.parseJSON = (jsonString) => {
 
 // hash making
 utilities.hash = (str) => {
-    let hash;
     if (typeof str === 'string' && str.length > 0) {
-        hash = crypto.createHmac('sha256', environment.secretKey).update(str).digest('hex');
+        const hash = crypto.createHmac('sha256', environment.secretKey).update(str).digest('hex');
         console.log('🚀 ~ file: utilities.js:36 ~ hash :', hash);
+        return hash;
     }
-    return hash;
+    return false;
+};
+
+// create a random string
+utilities.createRandomString = (strLength) => {
+    const length = typeof strLength === 'number' && strLength > 0 ? strLength : false;
+    if (length) {
+        const possibleCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        let output;
+
+        for (let i = 1; i <= length; i += 1) {
+            const randomCharacter = possibleCharacters.charAt(
+                Math.floor(Math.random() * possibleCharacters.length)
+            );
+            output += randomCharacter;
+        }
+        return output;
+    }
+    return false;
 };
 
 // export module
