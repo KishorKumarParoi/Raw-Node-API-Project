@@ -221,7 +221,39 @@ handler._users.put = (requestProperties, callback) => {
     }
 };
 handler._users.delete = (requestProperties, callback) => {
-    callback(300);
+    const phone =
+        typeof requestProperties.queryStringObject.phone === 'string' &&
+        requestProperties.queryStringObject.phone.trim().length === 11
+            ? requestProperties.queryStringObject.phone
+            : false;
+    console.log('🚀 ~ file: userHandler.js:129 ~ phone:', phone);
+
+    // lookup the user
+    if (phone) {
+        data.read('users', phone, (err, userData) => {
+            if (!err && userData) {
+                data.delete('users', phone, (err2) => {
+                    if (!err2) {
+                        callback(200, {
+                            message: 'User was successfully deleted',
+                        });
+                    } else {
+                        callback(404, {
+                            message: "Can't delete user ",
+                        });
+                    }
+                });
+            } else {
+                callback(500, {
+                    error: 'There was server side error',
+                });
+            }
+        });
+    } else {
+        callback(404, {
+            error: 'Requested URL not found',
+        });
+    }
 };
 
 export default handler;
