@@ -46,6 +46,8 @@ utilities.hash = (str) => {
 // create a random string
 utilities.createRandomString = (strLength) => {
     const length = typeof strLength === 'number' && strLength > 0 ? strLength : false;
+    console.log('🚀 ~ file: utilities.js:49 ~ length:', length);
+
     if (length) {
         const possibleCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
         let output;

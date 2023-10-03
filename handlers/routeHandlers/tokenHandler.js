@@ -50,7 +50,7 @@ handler._tokens.post = (requestProperties, callback) => {
             const hashedPassword = utilities.hash(password);
 
             if (hashedPassword === utilities.parseJSON(userData).password) {
-                const tokenId = utilities.createRandomString(36);
+                const tokenId = utilities.createRandomString(46);
                 const expires = Date.now() + 60 * 60 * 1000;
                 const tokenObject = {
                     phone,
@@ -80,32 +80,32 @@ handler._tokens.post = (requestProperties, callback) => {
         });
     }
 };
+
 // TODO: Authentication
 handler._tokens.get = (requestProperties, callback) => {
-    console.log('🚀 ~ file: tokenHandler.js:117 ~ requestProperties:', requestProperties);
-    // check if the phone number is valid
-    console.log(
-        '🚀 ~ file: tokenHandler.js:119 ~ queryStringObject:',
-        requestProperties.queryStringObject
-    );
-    const phone =
-        typeof requestProperties.queryStringObject.phone === 'string' &&
-        requestProperties.queryStringObject.phone.trim().length === 11
-            ? requestProperties.queryStringObject.phone
-            : false;
-    console.log('🚀 ~ file: tokenHandler.js:129 ~ phone:', phone);
+    console.log('🚀 ~ file: tokenHandler.js:86 ~ requestProperties:', requestProperties);
+    console.log(requestProperties.queryStringObject.id.length);
 
-    // lookup the user
-    if (phone) {
-        data.read('tokens_tokens', phone, (err, u) => {
-            const user = { ...utilities.parseJSON(u) };
-            console.log('🚀 ~ file: tokenHandler.js:138 ~ data.read ~ user:', user);
-            if (!err && user) {
-                delete user.password;
-                callback(200, user);
+    // check if id is valid
+    const id =
+        typeof requestProperties.queryStringObject.id === 'string' &&
+        requestProperties.queryStringObject.id.trim().length === 36
+            ? requestProperties.queryStringObject.id
+            : false;
+
+    console.log('🚀 ~ file: tokenHandler.js:89 ~ id:', id);
+
+    // lookup the token
+    if (id) {
+        data.read('tokens', id, (err, tokenData) => {
+            const token = { ...utilities.parseJSON(tokenData) };
+            console.log('🚀 ~ file: tokenHandler.js:138 ~ data.read ~ token:', token);
+            if (!err && token) {
+                delete token.password;
+                callback(200, token);
             } else {
                 callback(404, {
-                    error: 'Requested user not found in server',
+                    error: 'Requested token not found in server',
                 });
             }
         });
