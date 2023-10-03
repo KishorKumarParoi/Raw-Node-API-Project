@@ -7,14 +7,18 @@
  */
 
 // dependencies
-import handler from './handlers/routeHandlers/notFoundHandler.js';
+import handler1 from './handlers/routeHandlers/notFoundHandler.js';
 import handler2 from './handlers/routeHandlers/sampleHandler.js';
+import handler4 from './handlers/routeHandlers/tokenHandler.js';
 import handler3 from './handlers/routeHandlers/userHandler.js';
+
 // module scaffolding
+
 const routes = {
+    notFound: handler1.noHandler,
     sample: handler2.sampleHandler,
-    notFound: handler.noHandler,
     user: handler3.userHandler,
+    token: handler4.tokenHandler,
 };
 
 // export module
