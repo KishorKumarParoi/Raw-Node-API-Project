@@ -72,6 +72,10 @@ handler._users.post = (requestProperties, callback) => {
                 data.create('users', phone, userObject, (err2) => {
                     if (!err2) {
                         console.log('User is created successfully');
+                        console.log(
+                            '🚀 ~ file: userHandler.js:73 ~ data.create ~ userObject:',
+                            userObject
+                        );
                     } else {
                         callback(500, {
                             error: 'Could not create user',
@@ -131,8 +135,9 @@ handler._users.get = (requestProperties, callback) => {
     if (phone) {
         data.read('users', phone, (err, u) => {
             const user = { ...utilities.parseJSON(u) };
+            console.log('🚀 ~ file: userHandler.js:138 ~ data.read ~ user:', user);
             if (!err && user) {
-                delete user.password;
+                // delete user.password;
                 callback(200, user);
             } else {
                 callback(404, {
