@@ -28,6 +28,7 @@ handler.tokenHandler = (requestProperties, callback) => {
 handler._tokens = {};
 
 handler._tokens.post = (requestProperties, callback) => {
+    console.log('🚀 ~ file: tokenHandler.js:31 ~ requestProperties:', requestProperties);
     const phone =
         typeof requestProperties.body.phone === 'string' &&
         requestProperties.body.phone.trim().length === 11
@@ -39,6 +40,9 @@ handler._tokens.post = (requestProperties, callback) => {
         requestProperties.body.password.trim().length > 0
             ? requestProperties.body.password
             : false;
+
+    console.log('🚀 ~ file: tokenHandler.js:44 ~ password:', password);
+    console.log('🚀 ~ file: tokenHandler.js:44 ~ phone:', phone);
 
     if (phone && password) {
         data.read('users', phone, (err1, uData) => {
