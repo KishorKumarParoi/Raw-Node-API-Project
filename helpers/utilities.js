@@ -50,14 +50,19 @@ utilities.createRandomString = (strLength) => {
 
     if (length) {
         const possibleCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-        let output;
+        let output = '';
 
         for (let i = 1; i <= length; i += 1) {
             const randomCharacter = possibleCharacters.charAt(
                 Math.floor(Math.random() * possibleCharacters.length)
             );
+
+            // console.log('🚀 ~ file: utilities.js:61 ~ randomCharacter:', randomCharacter);
             output += randomCharacter;
         }
+
+        console.log('🚀 ~ file: utilities.js:63 ~ output;:', output);
+        console.log(output.length);
         return output;
     }
     return false;

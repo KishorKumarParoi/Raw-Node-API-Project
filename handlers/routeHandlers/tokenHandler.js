@@ -50,7 +50,7 @@ handler._tokens.post = (requestProperties, callback) => {
             const hashedPassword = utilities.hash(password);
 
             if (hashedPassword === utilities.parseJSON(userData).password) {
-                const tokenId = utilities.createRandomString(46);
+                const tokenId = utilities.createRandomString(55);
                 const expires = Date.now() + 60 * 60 * 1000;
                 const tokenObject = {
                     phone,
@@ -89,7 +89,7 @@ handler._tokens.get = (requestProperties, callback) => {
     // check if id is valid
     const id =
         typeof requestProperties.queryStringObject.id === 'string' &&
-        requestProperties.queryStringObject.id.trim().length === 36
+        requestProperties.queryStringObject.id.trim().length === 55
             ? requestProperties.queryStringObject.id
             : false;
 
