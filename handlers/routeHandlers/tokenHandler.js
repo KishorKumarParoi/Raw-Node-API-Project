@@ -13,11 +13,11 @@ import data from '../../lib/data.js';
 // module scaffolding
 const handler = {};
 
-handler.userHandler = (requestProperties, callback) => {
+handler.tokenHandler = (requestProperties, callback) => {
     // console.log(requestProperties);
     const acceptedMethods = ['get', 'post', 'put', 'delete'];
     if (acceptedMethods.includes(requestProperties.method)) {
-        handler._users[requestProperties.method](requestProperties, callback);
+        handler._tokens[requestProperties.method](requestProperties, callback);
     } else {
         callback(405, {
             message: "Can't get User",
@@ -25,19 +25,9 @@ handler.userHandler = (requestProperties, callback) => {
     }
 };
 
-handler._users = {};
+handler._tokens = {};
 
-handler._users.post = (requestProperties, callback) => {
-    const firstName =
-        typeof requestProperties.body.firstName === 'string' &&
-        requestProperties.body.firstName.trim().length > 0
-            ? requestProperties.body.firstName
-            : false;
-    const lastName =
-        typeof requestProperties.body.lastName === 'string' &&
-        requestProperties.body.lastName.trim().length > 0
-            ? requestProperties.body.lastName
-            : false;
+handler._tokens.post = (requestProperties, callback) => {
     const phone =
         typeof requestProperties.body.phone === 'string' &&
         requestProperties.body.phone.trim().length === 11
@@ -49,66 +39,34 @@ handler._users.post = (requestProperties, callback) => {
         requestProperties.body.password.trim().length > 0
             ? requestProperties.body.password
             : false;
-    const tosAgreement =
-        typeof requestProperties.body.tosAgreement === 'boolean'
-            ? requestProperties.body.tosAgreement
-            : false;
 
-    console.log('Handler-requestProperties : ', requestProperties);
-    console.log(firstName, lastName, phone, password, tosAgreement);
+    if (phone && password) {
+        data.read('users', phone, (err1, uData) => {
+            const userData = { ...utilities.parseJSON(uData) };
+            const hashedPassword = utilities.hash(password);
 
-    if (firstName && lastName && phone && password && tosAgreement) {
-        // make sure the user data doesn't already exist
-        data.read('users', phone, (err) => {
-            if (err) {
-                const userObject = {
-                    firstName,
-                    lastName,
+            if (hashedPassword === userData.password) {
+                const tokenId = utilities.createRandomString(20);
+                const expires = Date.now() + 60 * 60 * 1000;
+                const tokenObject = {
                     phone,
-                    password: utilities.hash(password),
-                    tosAgreement,
+                    id: tokenId,
+                    expires,
                 };
 
-                // storing data to database
-                data.create('users', phone, userObject, (err2) => {
+                // store the token in database
+                data.create('tokens', tokenId, tokenObject, (err2) => {
                     if (!err2) {
-                        console.log('User is created successfully');
-                        console.log(
-                            '🚀 ~ file: userHandler.js:73 ~ data.create ~ userObject:',
-                            userObject
-                        );
+                        callback(200, tokenObject);
                     } else {
-                        callback(500, {
-                            error: 'Could not create user',
+                        callback(400, {
+                            error: 'There was a problem from server side',
                         });
                     }
                 });
             } else {
-                // data.update(
-                //     'users',
-                //     phone,
-                //     {
-                //         firstName: 'Pallabi',
-                //         lastName: 'Karmaker',
-                //         phone: '01775293579',
-                //         password: 'securePassword123',
-                //         tosAgreement: true,
-                //     },
-                //     (err4) => {
-                //         console.log(
-                //             '🚀 ~ file: userHandler.js:93 ~ data.read ~ err4: Error Happened',
-                //             err4
-                //         );
-                //     }
-                // );
-
-                // if data exists delete data
-                // data.delete('user', phone, (err2) => {
-                //     console.log(`deleted ${phone} data : `, err2);
-                // });
-
-                callback(500, {
-                    error: 'There was an error from server side',
+                callback(400, {
+                    error: 'Password is not valid',
                 });
             }
         });
@@ -119,11 +77,11 @@ handler._users.post = (requestProperties, callback) => {
     }
 };
 // TODO: Authentication
-handler._users.get = (requestProperties, callback) => {
-    console.log('🚀 ~ file: userHandler.js:117 ~ requestProperties:', requestProperties);
+handler._tokens.get = (requestProperties, callback) => {
+    console.log('🚀 ~ file: tokenHandler.js:117 ~ requestProperties:', requestProperties);
     // check if the phone number is valid
     console.log(
-        '🚀 ~ file: userHandler.js:119 ~ queryStringObject:',
+        '🚀 ~ file: tokenHandler.js:119 ~ queryStringObject:',
         requestProperties.queryStringObject
     );
     const phone =
@@ -131,13 +89,13 @@ handler._users.get = (requestProperties, callback) => {
         requestProperties.queryStringObject.phone.trim().length === 11
             ? requestProperties.queryStringObject.phone
             : false;
-    console.log('🚀 ~ file: userHandler.js:129 ~ phone:', phone);
+    console.log('🚀 ~ file: tokenHandler.js:129 ~ phone:', phone);
 
     // lookup the user
     if (phone) {
-        data.read('users', phone, (err, u) => {
+        data.read('tokens_tokens', phone, (err, u) => {
             const user = { ...utilities.parseJSON(u) };
-            console.log('🚀 ~ file: userHandler.js:138 ~ data.read ~ user:', user);
+            console.log('🚀 ~ file: tokenHandler.js:138 ~ data.read ~ user:', user);
             if (!err && user) {
                 delete user.password;
                 callback(200, user);
@@ -155,8 +113,8 @@ handler._users.get = (requestProperties, callback) => {
 };
 
 // TODO: Authentication
-handler._users.put = (requestProperties, callback) => {
-    console.log('🚀 ~ file: userHandler.js:155 ~ requestProperties:', requestProperties);
+handler._tokens.put = (requestProperties, callback) => {
+    console.log('🚀 ~ file: tokenHandler.js:155 ~ requestProperties:', requestProperties);
     const firstName =
         typeof requestProperties.body.firstName === 'string' &&
         requestProperties.body.firstName.trim().length > 0
@@ -181,9 +139,9 @@ handler._users.put = (requestProperties, callback) => {
 
     if (phone) {
         if (firstName || lastName || password) {
-            data.read('users', phone, (err, uData) => {
+            data.read('tokens_tokens', phone, (err, uData) => {
                 const userData = { ...utilities.parseJSON(uData) };
-                console.log('🚀 ~ file: userHandler.js:182 ~ data.read ~ userData:', userData);
+                console.log('🚀 ~ file: tokenHandler.js:182 ~ data.read ~ userData:', userData);
                 if (!err && userData) {
                     if (firstName) {
                         userData.firstName = firstName;
@@ -196,7 +154,7 @@ handler._users.put = (requestProperties, callback) => {
                     }
 
                     // store in database
-                    data.update('users', phone, userData, (err2) => {
+                    data.update('tokens_tokens', phone, userData, (err2) => {
                         if (!err2) {
                             callback(200, {
                                 message: 'User was updated successfully',
@@ -226,19 +184,19 @@ handler._users.put = (requestProperties, callback) => {
 };
 
 // TODO: Authentication
-handler._users.delete = (requestProperties, callback) => {
+handler._tokens.delete = (requestProperties, callback) => {
     const phone =
         typeof requestProperties.queryStringObject.phone === 'string' &&
         requestProperties.queryStringObject.phone.trim().length === 11
             ? requestProperties.queryStringObject.phone
             : false;
-    console.log('🚀 ~ file: userHandler.js:129 ~ phone:', phone);
+    console.log('🚀 ~ file: tokenHandler.js:129 ~ phone:', phone);
 
     // lookup the user
     if (phone) {
-        data.read('users', phone, (err, userData) => {
+        data.read('tokens_tokens', phone, (err, userData) => {
             if (!err && userData) {
-                data.delete('users', phone, (err2) => {
+                data.delete('tokens_tokens', phone, (err2) => {
                     if (!err2) {
                         callback(200, {
                             message: 'User was successfully deleted',
