@@ -178,7 +178,8 @@ handler._users.put = (requestProperties, callback) => {
     if (phone) {
         if (firstName || lastName || password) {
             data.read('users', phone, (err, uData) => {
-                const userData = uData;
+                const userData = { ...utilities.parseJSON(uData) };
+                console.log('🚀 ~ file: userHandler.js:182 ~ data.read ~ userData:', userData);
                 if (!err && userData) {
                     if (firstName) {
                         userData.firstName = firstName;
