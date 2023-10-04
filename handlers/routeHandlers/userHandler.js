@@ -169,7 +169,6 @@ handler._users.get = (requestProperties, callback) => {
     }
 };
 
-// @TODO: Authentication
 handler._users.put = (requestProperties, callback) => {
     console.log('🚀 ~ file: userHandler.js:155 ~ requestProperties:', requestProperties);
     const firstName =
@@ -257,7 +256,6 @@ handler._users.put = (requestProperties, callback) => {
     }
 };
 
-// @TODO: Authentication
 handler._users.delete = (requestProperties, callback) => {
     const phone =
         typeof requestProperties.queryStringObject.phone === 'string' &&
@@ -266,24 +264,37 @@ handler._users.delete = (requestProperties, callback) => {
             : false;
     console.log('🚀 ~ file: userHandler.js:129 ~ phone:', phone);
 
-    // lookup the user
     if (phone) {
-        data.read('users', phone, (err, userData) => {
-            if (!err && userData) {
-                data.delete('users', phone, (err2) => {
-                    if (!err2) {
-                        callback(200, {
-                            message: 'User was successfully deleted',
+        // lookup the user
+        const token =
+            typeof requestProperties.headersObject.token === 'string'
+                ? requestProperties.headersObject.token
+                : false;
+
+        tokenHandler._token.verify(token, phone, (tokenId) => {
+            if (tokenId) {
+                data.read('users', phone, (err, userData) => {
+                    if (!err && userData) {
+                        data.delete('users', phone, (err2) => {
+                            if (!err2) {
+                                callback(200, {
+                                    message: 'User was successfully deleted',
+                                });
+                            } else {
+                                callback(404, {
+                                    message: "Can't delete user ",
+                                });
+                            }
                         });
                     } else {
-                        callback(404, {
-                            message: "Can't delete user ",
+                        callback(500, {
+                            error: 'There was server side error',
                         });
                     }
                 });
             } else {
-                callback(500, {
-                    error: 'There was server side error',
+                callback(403, {
+                    message: 'Delete : Authentication Failure!',
                 });
             }
         });
