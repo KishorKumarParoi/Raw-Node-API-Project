@@ -119,7 +119,7 @@ handler._users.post = (requestProperties, callback) => {
         });
     }
 };
-// @FIXME: Authentication
+
 handler._users.get = (requestProperties, callback) => {
     console.log('🚀 ~ file: userHandler.js:117 ~ requestProperties:', requestProperties);
     // check if the phone number is valid
@@ -158,7 +158,7 @@ handler._users.get = (requestProperties, callback) => {
                 });
             } else {
                 callback(403, {
-                    message: 'Authentication Failure!',
+                    message: 'GET : Authentication Failure!',
                 });
             }
         });
@@ -195,30 +195,47 @@ handler._users.put = (requestProperties, callback) => {
             : false;
 
     if (phone) {
-        if (firstName || lastName || password) {
-            data.read('users', phone, (err, uData) => {
-                const userData = { ...utilities.parseJSON(uData) };
-                console.log('🚀 ~ file: userHandler.js:182 ~ data.read ~ userData:', userData);
-                if (!err && userData) {
-                    if (firstName) {
-                        userData.firstName = firstName;
-                    }
-                    if (lastName) {
-                        userData.lastName = lastName;
-                    }
-                    if (password) {
-                        userData.password = utilities.hash(password);
-                    }
+        // lookup the user
+        const token =
+            typeof requestProperties.headersObject.token === 'string'
+                ? requestProperties.headersObject.token
+                : false;
 
-                    // store in database
-                    data.update('users', phone, userData, (err2) => {
-                        if (!err2) {
-                            callback(200, {
-                                message: 'User was updated successfully',
+        tokenHandler._token.verify(token, phone, (tokenId) => {
+            if (tokenId) {
+                if (firstName || lastName || password) {
+                    data.read('users', phone, (err, uData) => {
+                        const userData = { ...utilities.parseJSON(uData) };
+                        console.log(
+                            '🚀 ~ file: userHandler.js:182 ~ data.read ~ userData:',
+                            userData
+                        );
+                        if (!err && userData) {
+                            if (firstName) {
+                                userData.firstName = firstName;
+                            }
+                            if (lastName) {
+                                userData.lastName = lastName;
+                            }
+                            if (password) {
+                                userData.password = utilities.hash(password);
+                            }
+
+                            // store in database
+                            data.update('users', phone, userData, (err2) => {
+                                if (!err2) {
+                                    callback(200, {
+                                        message: 'User was updated successfully',
+                                    });
+                                } else {
+                                    callback(500, {
+                                        error: 'There was problem from Server Side',
+                                    });
+                                }
                             });
                         } else {
-                            callback(500, {
-                                error: 'There was problem from Server Side',
+                            callback(400, {
+                                error: 'You have problem in your request',
                             });
                         }
                     });
@@ -227,12 +244,12 @@ handler._users.put = (requestProperties, callback) => {
                         error: 'You have problem in your request',
                     });
                 }
-            });
-        } else {
-            callback(400, {
-                error: 'You have problem in your request',
-            });
-        }
+            } else {
+                callback(403, {
+                    message: 'PUT : Authentication Failure!',
+                });
+            }
+        });
     } else {
         callback(400, {
             error: 'Invalid phone number, try again',
