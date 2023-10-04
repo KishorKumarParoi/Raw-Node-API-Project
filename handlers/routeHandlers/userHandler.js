@@ -9,6 +9,7 @@
 // dependencies
 import utilities from '../../helpers/utilities.js';
 import data from '../../lib/data.js';
+import tokenHandler from './tokenHandler.js';
 
 // module scaffolding
 const handler = {};
@@ -133,17 +134,31 @@ handler._users.get = (requestProperties, callback) => {
             : false;
     console.log('🚀 ~ file: userHandler.js:129 ~ phone:', phone);
 
-    // lookup the user
     if (phone) {
-        data.read('users', phone, (err, u) => {
-            const user = { ...utilities.parseJSON(u) };
-            console.log('🚀 ~ file: userHandler.js:138 ~ data.read ~ user:', user);
-            if (!err && user) {
-                delete user.password;
-                callback(200, user);
+        // lookup the user
+
+        const token =
+            typeof requestProperties.headersObject.token === 'string'
+                ? requestProperties.headersObject.token
+                : false;
+
+        tokenHandler._token.verify(token, phone, (tokenId) => {
+            if (tokenId) {
+                data.read('users', phone, (err, u) => {
+                    const user = { ...utilities.parseJSON(u) };
+                    console.log('🚀 ~ file: userHandler.js:138 ~ data.read ~ user:', user);
+                    if (!err && user) {
+                        delete user.password;
+                        callback(200, user);
+                    } else {
+                        callback(404, {
+                            error: 'Requested user not found in server',
+                        });
+                    }
+                });
             } else {
-                callback(404, {
-                    error: 'Requested user not found in server',
+                callback(403, {
+                    message: 'Authentication Failure!',
                 });
             }
         });
