@@ -17,7 +17,7 @@ handler.tokenHandler = (requestProperties, callback) => {
     // console.log(requestProperties);
     const acceptedMethods = ['get', 'post', 'put', 'delete'];
     if (acceptedMethods.includes(requestProperties.method)) {
-        handler._tokens[requestProperties.method](requestProperties, callback);
+        handler._token[requestProperties.method](requestProperties, callback);
     } else {
         callback(405, {
             message: "Can't get User",
@@ -25,9 +25,9 @@ handler.tokenHandler = (requestProperties, callback) => {
     }
 };
 
-handler._tokens = {};
+handler._token = {};
 
-handler._tokens.post = (requestProperties, callback) => {
+handler._token.post = (requestProperties, callback) => {
     console.log('🚀 ~ file: tokenHandler.js:31 ~ requestProperties:', requestProperties);
     const phone =
         typeof requestProperties.body.phone === 'string' &&
@@ -80,7 +80,7 @@ handler._tokens.post = (requestProperties, callback) => {
         });
     }
 };
-handler._tokens.get = (requestProperties, callback) => {
+handler._token.get = (requestProperties, callback) => {
     console.log('🚀 ~ file: tokenHandler.js:86 ~ requestProperties:', requestProperties);
     console.log(requestProperties.queryStringObject.id.length);
 
@@ -115,7 +115,7 @@ handler._tokens.get = (requestProperties, callback) => {
 };
 
 // TODO: Authentication
-handler._tokens.put = (requestProperties, callback) => {
+handler._token.put = (requestProperties, callback) => {
     const id =
         typeof requestProperties.body.id === 'string' &&
         requestProperties.body.id.trim().length === 55
@@ -160,7 +160,7 @@ handler._tokens.put = (requestProperties, callback) => {
     }
 };
 
-handler._tokens.delete = (requestProperties, callback) => {
+handler._token.delete = (requestProperties, callback) => {
     console.log(
         '🚀 ~ file: tokenHandler.js:166 ~ handler._tokens.delete ~ requestProperties:',
         requestProperties
@@ -198,6 +198,21 @@ handler._tokens.delete = (requestProperties, callback) => {
             error: 'Requested URL not found',
         });
     }
+};
+
+handler._token.verify = (id, phone, callback) => {
+    data.read('tokens', id, (err, tData) => {
+        const tokenData = { ...utilities.parseJSON(tData) };
+        if (!err && tokenData) {
+            if (tokenData.phone === phone && tokenData.expires > Date.now()) {
+                callback(true);
+            } else {
+                callback(false);
+            }
+        } else {
+            callback(false);
+        }
+    });
 };
 
 export default handler;
