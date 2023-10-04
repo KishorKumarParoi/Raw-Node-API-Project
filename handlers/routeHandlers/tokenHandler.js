@@ -160,27 +160,30 @@ handler._tokens.put = (requestProperties, callback) => {
     }
 };
 
-// TODO: Authentication
 handler._tokens.delete = (requestProperties, callback) => {
-    const phone =
-        typeof requestProperties.queryStringObject.phone === 'string' &&
-        requestProperties.queryStringObject.phone.trim().length === 11
-            ? requestProperties.queryStringObject.phone
+    console.log(
+        '🚀 ~ file: tokenHandler.js:166 ~ handler._tokens.delete ~ requestProperties:',
+        requestProperties
+    );
+    const id =
+        typeof requestProperties.queryStringObject.id === 'string' &&
+        requestProperties.queryStringObject.id.trim().length === 55
+            ? requestProperties.queryStringObject.id
             : false;
-    console.log('🚀 ~ file: tokenHandler.js:129 ~ phone:', phone);
+    console.log('🚀 ~ file: tokenHandler.js:129 ~ id:', id);
 
     // lookup the user
-    if (phone) {
-        data.read('tokens_tokens', phone, (err, userData) => {
-            if (!err && userData) {
-                data.delete('tokens_tokens', phone, (err2) => {
+    if (id) {
+        data.read('tokens', id, (err, tokenData) => {
+            if (!err && tokenData) {
+                data.delete('tokens', id, (err2) => {
                     if (!err2) {
                         callback(200, {
-                            message: 'User was successfully deleted',
+                            message: 'Token was successfully deleted',
                         });
                     } else {
                         callback(404, {
-                            message: "Can't delete user ",
+                            message: "Can't delete token ",
                         });
                     }
                 });
