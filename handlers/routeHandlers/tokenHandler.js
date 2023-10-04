@@ -80,8 +80,6 @@ handler._tokens.post = (requestProperties, callback) => {
         });
     }
 };
-
-// TODO: Authentication
 handler._tokens.get = (requestProperties, callback) => {
     console.log('🚀 ~ file: tokenHandler.js:86 ~ requestProperties:', requestProperties);
     console.log(requestProperties.queryStringObject.id.length);
@@ -118,71 +116,46 @@ handler._tokens.get = (requestProperties, callback) => {
 
 // TODO: Authentication
 handler._tokens.put = (requestProperties, callback) => {
-    console.log('🚀 ~ file: tokenHandler.js:155 ~ requestProperties:', requestProperties);
-    const firstName =
-        typeof requestProperties.body.firstName === 'string' &&
-        requestProperties.body.firstName.trim().length > 0
-            ? requestProperties.body.firstName
-            : false;
-    const lastName =
-        typeof requestProperties.body.lastName === 'string' &&
-        requestProperties.body.lastName.trim().length > 0
-            ? requestProperties.body.lastName
-            : false;
-    const phone =
-        typeof requestProperties.body.phone === 'string' &&
-        requestProperties.body.phone.trim().length === 11
-            ? requestProperties.body.phone
+    const id =
+        typeof requestProperties.body.id === 'string' &&
+        requestProperties.body.id.trim().length === 55
+            ? requestProperties.body.id
             : false;
 
-    const password =
-        typeof requestProperties.body.password === 'string' &&
-        requestProperties.body.password.trim().length > 0
-            ? requestProperties.body.password
-            : false;
+    const extend = !!(
+        typeof requestProperties.body.extend === 'boolean' && requestProperties.body.extend === true
+    );
 
-    if (phone) {
-        if (firstName || lastName || password) {
-            data.read('tokens_tokens', phone, (err, uData) => {
-                const userData = { ...utilities.parseJSON(uData) };
-                console.log('🚀 ~ file: tokenHandler.js:182 ~ data.read ~ userData:', userData);
-                if (!err && userData) {
-                    if (firstName) {
-                        userData.firstName = firstName;
-                    }
-                    if (lastName) {
-                        userData.lastName = lastName;
-                    }
-                    if (password) {
-                        userData.password = utilities.hash(password);
-                    }
+    if (id && extend) {
+        data.read('tokens', id, (err, tokenData) => {
+            const tokenObject = { ...utilities.parseJSON(tokenData) };
 
-                    // store in database
-                    data.update('tokens_tokens', phone, userData, (err2) => {
-                        if (!err2) {
-                            callback(200, {
-                                message: 'User was updated successfully',
-                            });
-                        } else {
-                            callback(500, {
-                                error: 'There was problem from Server Side',
-                            });
-                        }
+            console.log('🚀 ~ file: tokenHandler.js:134 ~ data.read ~ Date.now():', Date.now());
+            console.log(
+                '🚀 ~ file: tokenHandler.js:135 ~ data.read ~ tokenObject.expire:',
+                tokenObject.expires
+            );
+
+            if (tokenObject.expires > Date.now()) {
+                tokenObject.expires = Date.now() + 60 * 60 * 1000;
+            }
+
+            // store in database
+            data.update('tokens', id, tokenObject, (err2) => {
+                if (!err2) {
+                    callback(200, {
+                        message: 'Token was updated successfully',
                     });
                 } else {
                     callback(400, {
-                        error: 'You have problem in your request',
+                        error: 'Token was expired',
                     });
                 }
             });
-        } else {
-            callback(400, {
-                error: 'You have problem in your request',
-            });
-        }
+        });
     } else {
         callback(400, {
-            error: 'Invalid phone number, try again',
+            Error: 'There is a problem in your request',
         });
     }
 };
