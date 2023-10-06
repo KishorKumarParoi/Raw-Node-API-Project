@@ -7,6 +7,7 @@
  */
 
 // dependencies
+import environmentVariables from '../../helpers/environmentVariables.js';
 import utilities from '../../helpers/utilities.js';
 import data from '../../lib/data.js';
 import tokenHandler from './tokenHandler.js';
@@ -59,7 +60,7 @@ handler._checks.post = (requestProperties, callback) => {
             ? requestProperties.body.timeOutSeconds
             : false;
 
-    if (protocol && url && method & successCodes && timeOutSeconds) {
+    if (protocol && url && method && successCodes && timeOutSeconds) {
         const token =
             typeof requestProperties.headersObject.token === 'string'
                 ? requestProperties.headersObject.token
@@ -85,7 +86,41 @@ handler._checks.post = (requestProperties, callback) => {
                                         ? userObject.checks
                                         : [];
 
-                                if (userChecks.length < maxChecks) {
+                                if (userChecks.length < environmentVariables.maxChecks) {
+                                    const checkId = utilities.createRandomString(55);
+                                    const checkObject = {
+                                        id: checkId,
+                                        userPhone,
+                                        protocol,
+                                        url,
+                                        method,
+                                        successCodes,
+                                        timeOutSeconds,
+                                    };
+
+                                    // save the object
+                                    data.create('checks', checkId, checkObject, (err3) => {
+                                        if (!err3) {
+                                            //  add check id to user's object
+                                            userObject.checks = userChecks;
+                                            userObject.checks.push(checkId);
+
+                                            // save the updated userObject
+                                            data.update('users', userPhone, (err4) => {
+                                                if (!err4) {
+                                                    callback(200, checkObject);
+                                                } else {
+                                                    callback(400, {
+                                                        error: 'There was error in server side',
+                                                    });
+                                                }
+                                            });
+                                        } else {
+                                            callback(500, {
+                                                error: 'There was sever side error',
+                                            });
+                                        }
+                                    });
                                 } else {
                                     callback(401, {
                                         error: 'User already reached maximum check limit',
@@ -116,10 +151,16 @@ handler._checks.post = (requestProperties, callback) => {
     }
 };
 
-handler._checks.get = (requestProperties, callback) => {};
+handler._checks.get = (requestProperties, callback) => {
+    callback(200);
+};
 
-handler._checks.put = (requestProperties, callback) => {};
+handler._checks.put = (requestProperties, callback) => {
+    callback(400);
+};
 
-handler._checks.delete = (requestProperties, callback) => {};
+handler._checks.delete = (requestProperties, callback) => {
+    callback(300);
+};
 
 export default handler;
