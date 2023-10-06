@@ -28,33 +28,46 @@ handler._checks.post = (requestProperties, callback) => {
     // validate methods
     const protocol =
         typeof requestProperties.body.protocol === 'string' &&
-        ['http', 'https'].includes(requestProperties.body.protocol)
+            ['http', 'https'].includes(requestProperties.body.protocol)
             ? requestProperties.body.protocol
             : false;
     const url =
         typeof requestProperties.body.url === 'string' &&
-        requestProperties.body.url.trim().length > 0
+            requestProperties.body.url.trim().length > 0
             ? requestProperties.body.url
             : false;
     const method =
         typeof requestProperties.body.method === 'string' &&
-        ['get', 'put', 'post', 'delete'].includes(requestProperties.body.method)
+            ['get', 'put', 'post', 'delete'].includes(requestProperties.body.method)
             ? requestProperties.body.method
             : false;
 
     const successCodes =
         typeof requestProperties.body.successCodes === 'object' &&
-        requestProperties.body.successCodes instanceof Array
+            requestProperties.body.successCodes instanceof Array
             ? requestProperties.body.successCodes
             : false;
 
     const timeOutSeconds =
         typeof requestProperties.body.timeOutSeconds === 'number' &&
-        requestProperties.body.timeOutSeconds % 1 === 0 &&
-        requestProperties.body.timeOutSeconds >= 1 &&
-        requestProperties.body.timeOutSeconds <= 5
+            requestProperties.body.timeOutSeconds % 1 === 0 &&
+            requestProperties.body.timeOutSeconds >= 1 &&
+            requestProperties.body.timeOutSeconds <= 5
             ? requestProperties.body.timeOutSeconds
             : false;
+    
+    if (protocol && url && method & successCodes && timeOutSeconds) {
+        const token = typeof requestProperties.headersObject.token === 'string' ?
+            requestProperties.headersObject.token : false;
+        
+        // lookup the user
+        
+    }
+    else {
+        callback(400, {
+            error: 'You have a problem in your request';
+        })
+    }
 };
 
 handler._checks.get = (requestProperties, callback) => {};
