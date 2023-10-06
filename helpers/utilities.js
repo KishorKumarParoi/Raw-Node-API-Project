@@ -62,7 +62,7 @@ utilities.createRandomString = (strLength) => {
         }
 
         console.log('🚀 ~ file: utilities.js:63 ~ output;:', output);
-        console.log(output.length);
+        console.log('🚀 ~ file: utilities.js:65 ~ output.length:', output.length);
         return output;
     }
     return false;
