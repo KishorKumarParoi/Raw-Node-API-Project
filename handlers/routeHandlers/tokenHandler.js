@@ -50,7 +50,7 @@ handler._token.post = (requestProperties, callback) => {
             const hashedPassword = utilities.hash(password);
 
             if (hashedPassword === utilities.parseJSON(userData).password) {
-                const tokenId = utilities.createRandomString(55);
+                const tokenId = utilities.createRandomString(11);
                 const expires = Date.now() + 60 * 60 * 1000;
                 const tokenObject = {
                     phone,
