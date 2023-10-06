@@ -16,7 +16,7 @@ import tokenHandler from './tokenHandler.js';
 const handler = {};
 
 handler.checkHandler = (requestProperties, callback) => {
-    const acceptedMethods = ['get', 'post', 'put', 'delete'];
+    const acceptedMethods = ['GET', 'POST', 'PUT', 'DELETE'];
     if (acceptedMethods.includes(requestProperties.method)) {
         handler._checks[requestProperties.method](requestProperties, callback);
     } else {
