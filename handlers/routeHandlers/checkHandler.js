@@ -16,7 +16,7 @@ import tokenHandler from './tokenHandler.js';
 const handler = {};
 
 handler.checkHandler = (requestProperties, callback) => {
-    const acceptedMethods = ['GET', 'POST', 'PUT', 'DELETE'];
+    const acceptedMethods = ['get', 'post', 'put', 'delete'];
     if (acceptedMethods.includes(requestProperties.method)) {
         handler._checks[requestProperties.method](requestProperties, callback);
     } else {
@@ -59,6 +59,16 @@ handler._checks.post = (requestProperties, callback) => {
         requestProperties.body.timeOutSeconds <= 5
             ? requestProperties.body.timeOutSeconds
             : false;
+
+    const obj = {
+        protocol,
+        url,
+        method,
+        successCodes,
+        timeOutSeconds,
+    };
+
+    console.log('🚀 ~ file: checkHandler.js:70 ~ obj:', obj);
 
     if (protocol && url && method && successCodes && timeOutSeconds) {
         const token =
