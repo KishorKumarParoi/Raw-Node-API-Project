@@ -78,6 +78,19 @@ handler._checks.post = (requestProperties, callback) => {
                     if (!err2 && userData) {
                         tokenHandler._token.verify(token, userPhone, (tokenIsValid) => {
                             if (tokenIsValid) {
+                                const userObject = userData;
+                                const userChecks =
+                                    typeof userObject.checks === 'object' &&
+                                    userObject.checks instanceof Array
+                                        ? userObject.checks
+                                        : [];
+
+                                if (userChecks.length < maxChecks) {
+                                } else {
+                                    callback(401, {
+                                        error: 'User already reached maximum check limit',
+                                    });
+                                }
                             } else {
                                 callback(403, {
                                     error: 'Check Authentication Problem',
