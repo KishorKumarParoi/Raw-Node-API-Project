@@ -80,6 +80,7 @@ handler._token.post = (requestProperties, callback) => {
         });
     }
 };
+
 handler._token.get = (requestProperties, callback) => {
     console.log('🚀 ~ file: tokenHandler.js:86 ~ requestProperties:', requestProperties);
     console.log(requestProperties.queryStringObject.id.length);
@@ -87,7 +88,7 @@ handler._token.get = (requestProperties, callback) => {
     // check if id is valid
     const id =
         typeof requestProperties.queryStringObject.id === 'string' &&
-        requestProperties.queryStringObject.id.trim().length === 55
+        requestProperties.queryStringObject.id.trim().length === 11
             ? requestProperties.queryStringObject.id
             : false;
 
@@ -114,11 +115,12 @@ handler._token.get = (requestProperties, callback) => {
     }
 };
 
-// TODO: Authentication
 handler._token.put = (requestProperties, callback) => {
+    console.log('🚀 ~ file: tokenHandler.js:119 ~ requestProperties:', requestProperties);
+
     const id =
         typeof requestProperties.body.id === 'string' &&
-        requestProperties.body.id.trim().length === 55
+        requestProperties.body.id.trim().length === 11
             ? requestProperties.body.id
             : false;
 
@@ -167,7 +169,7 @@ handler._token.delete = (requestProperties, callback) => {
     );
     const id =
         typeof requestProperties.queryStringObject.id === 'string' &&
-        requestProperties.queryStringObject.id.trim().length === 55
+        requestProperties.queryStringObject.id.trim().length === 11
             ? requestProperties.queryStringObject.id
             : false;
     console.log('🚀 ~ file: tokenHandler.js:129 ~ id:', id);
