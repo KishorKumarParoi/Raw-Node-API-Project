@@ -186,7 +186,44 @@ handler._checks.post = (requestProperties, callback) => {
 };
 
 handler._checks.get = (requestProperties, callback) => {
-    callback(200);
+    const id =
+        requestProperties.queryStringObject.id === 'string' &&
+        requestProperties.queryStringObject.id.trim().length === 11
+            ? requestProperties.queryStringObject.id
+            : false;
+
+    console.log('🚀 ~ file: checkHandler.js:190 ~ id:', id);
+
+    if (id) {
+        // lookup the user
+        data.read('checks', id, (err, checkData) => {
+            if (!err && checkData) {
+                const userObject = utilities.parseJSON(checkData);
+                const token =
+                    typeof requestProperties.headersObject.token === 'string'
+                        ? requestProperties.headersObject.token
+                        : false;
+
+                tokenHandler._token.verify(token, userObject.userphone, (tokenIsValid) => {
+                    if (!tokenIsValid) {
+                        callback(200, userObject);
+                    } else {
+                        callback(403, {
+                            error: 'Authentication Failure',
+                        });
+                    }
+                });
+            } else {
+                callback(500, {
+                    error: 'You have problem in your request',
+                });
+            }
+        });
+    } else {
+        callback(400, {
+            error: "Can't get Data",
+        });
+    }
 };
 
 handler._checks.put = (requestProperties, callback) => {
