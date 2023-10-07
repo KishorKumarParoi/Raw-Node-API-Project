@@ -16,7 +16,15 @@ import tokenHandler from './tokenHandler.js';
 const handler = {};
 
 handler.checkHandler = (requestProperties, callback) => {
+    console.log('🚀 ~ file: checkHandler.js:19 ~ requestProperties:', requestProperties);
+
     const acceptedMethods = ['get', 'post', 'put', 'delete'];
+    console.log('🚀 ~ file: checkHandler.js:22 ~ acceptedMethods:', acceptedMethods);
+    console.log(
+        '🚀 ~ file: checkHandler.js:25 ~ requestProperties.method:',
+        requestProperties.method
+    );
+
     if (acceptedMethods.includes(requestProperties.method)) {
         handler._checks[requestProperties.method](requestProperties, callback);
     } else {
@@ -42,7 +50,7 @@ handler._checks.post = (requestProperties, callback) => {
             : false;
     const method =
         typeof requestProperties.body.method === 'string' &&
-        ['get', 'put', 'post', 'delete'].includes(requestProperties.body.method)
+        ['GET', 'POST', 'PUT', 'DELETE'].includes(requestProperties.body.method)
             ? requestProperties.body.method
             : false;
 
@@ -85,11 +93,13 @@ handler._checks.post = (requestProperties, callback) => {
 
                 // lookup the user
                 data.read('users', userPhone, (err2, uData) => {
-                    const userData = { ...utilities.parseJSON(uData) };
-                    if (!err2 && userData) {
+                    if (!err2 && uData) {
                         tokenHandler._token.verify(token, userPhone, (tokenIsValid) => {
                             if (tokenIsValid) {
-                                const userObject = userData;
+                                const userObject = {
+                                    ...utilities.parseJSON(uData),
+                                };
+
                                 const userChecks =
                                     typeof userObject.checks === 'object' &&
                                     userObject.checks instanceof Array
@@ -97,7 +107,7 @@ handler._checks.post = (requestProperties, callback) => {
                                         : [];
 
                                 if (userChecks.length < environmentVariables.maxChecks) {
-                                    const checkId = utilities.createRandomString(55);
+                                    const checkId = utilities.createRandomString(11);
                                     const checkObject = {
                                         id: checkId,
                                         userPhone,
