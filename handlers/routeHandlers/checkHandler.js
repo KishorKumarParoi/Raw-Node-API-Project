@@ -99,12 +99,21 @@ handler._checks.post = (requestProperties, callback) => {
                                 const userObject = {
                                     ...utilities.parseJSON(uData),
                                 };
+                                console.log(
+                                    '🚀 ~ file: checkHandler.js:101 ~ tokenHandler._token.verify ~ userObject:',
+                                    userObject
+                                );
 
                                 const userChecks =
                                     typeof userObject.checks === 'object' &&
                                     userObject.checks instanceof Array
                                         ? userObject.checks
                                         : [];
+
+                                console.log(
+                                    '🚀 ~ file: checkHandler.js:108 ~ tokenHandler._token.verify ~ userChecks:',
+                                    userChecks
+                                );
 
                                 if (userChecks.length < environmentVariables.maxChecks) {
                                     const checkId = utilities.createRandomString(11);
@@ -124,6 +133,11 @@ handler._checks.post = (requestProperties, callback) => {
                                             //  add check id to user's object
                                             userObject.checks = userChecks;
                                             userObject.checks.push(checkId);
+
+                                            console.log(
+                                                '🚀 ~ file: checkHandler.js:136 ~ data.create ~ userObject:',
+                                                userObject
+                                            );
 
                                             // save the updated userObject
                                             data.update('users', userPhone, (err4) => {
