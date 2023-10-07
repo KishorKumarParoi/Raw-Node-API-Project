@@ -187,25 +187,39 @@ handler._checks.post = (requestProperties, callback) => {
 
 handler._checks.get = (requestProperties, callback) => {
     const id =
-        requestProperties.queryStringObject.id === 'string' &&
+        typeof requestProperties.queryStringObject.id === 'string' &&
         requestProperties.queryStringObject.id.trim().length === 11
             ? requestProperties.queryStringObject.id
             : false;
 
+    console.log(typeof requestProperties.queryStringObject.id);
+    console.log(requestProperties.queryStringObject.id.length);
+    console.log('🚀 ~ file: checkHandler.js:195 ~ requestProperties:', requestProperties);
     console.log('🚀 ~ file: checkHandler.js:190 ~ id:', id);
 
     if (id) {
         // lookup the user
         data.read('checks', id, (err, checkData) => {
             if (!err && checkData) {
-                const userObject = utilities.parseJSON(checkData);
+                const userObject = { ...utilities.parseJSON(checkData) };
+                console.log('🚀 ~ file: checkHandler.js:205 ~ data.read ~ userObject:', userObject);
+
                 const token =
                     typeof requestProperties.headersObject.token === 'string'
                         ? requestProperties.headersObject.token
                         : false;
 
-                tokenHandler._token.verify(token, userObject.userphone, (tokenIsValid) => {
-                    if (!tokenIsValid) {
+                console.log(
+                    '🚀 ~ file: checkHandler.js:211 ~ tokenHandler._token.verify ~ userObject.userphone:',
+                    userObject.userPhone
+                );
+
+                tokenHandler._token.verify(token, userObject.userPhone, (tokenIsValid) => {
+                    console.log(
+                        '🚀 ~ file: checkHandler.js:211 ~ tokenHandler._token.verify ~ tokenIsValid:',
+                        tokenIsValid
+                    );
+                    if (tokenIsValid) {
                         callback(200, userObject);
                     } else {
                         callback(403, {

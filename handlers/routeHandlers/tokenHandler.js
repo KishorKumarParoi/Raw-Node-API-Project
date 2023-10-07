@@ -203,15 +203,27 @@ handler._token.delete = (requestProperties, callback) => {
 };
 
 handler._token.verify = (id, phone, callback) => {
+    console.log('🚀 ~ file: tokenHandler.js:206 ~ phone:', phone);
+
     data.read('tokens', id, (err, tData) => {
         const tokenData = { ...utilities.parseJSON(tData) };
+        console.log('🚀 ~ file: tokenHandler.js:208 ~ data.read ~ tokenData:', tokenData);
+
         if (!err && tokenData) {
+            console.log(
+                '🚀 ~ file: tokenHandler.js:211 ~ data.read ~ tokenData.expires:',
+                tokenData.expires
+            );
+            console.log('🚀 ~ file: tokenHandler.js:211 ~ data.read ~ Date.now():', Date.now());
+
             if (tokenData.phone === phone && tokenData.expires > Date.now()) {
                 callback(true);
             } else {
+                console.log('Paroi');
                 callback(false);
             }
         } else {
+            console.log('KKP');
             callback(false);
         }
     });
