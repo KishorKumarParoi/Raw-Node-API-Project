@@ -140,7 +140,7 @@ handler._checks.post = (requestProperties, callback) => {
                                             );
 
                                             // save the updated userObject
-                                            data.update('users', userPhone, (err4) => {
+                                            data.update('users', userPhone, userObject, (err4) => {
                                                 if (!err4) {
                                                     callback(200, checkObject);
                                                 } else {
