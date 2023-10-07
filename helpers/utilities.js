@@ -18,18 +18,14 @@ const utilities = {};
 utilities.parseJSON = (jsonString) => {
     console.log('🚀 ~ file: utilities.js:18 ~ jsonString:', jsonString);
     let output = {};
-    console.log(typeof jsonString);
-    const x = JSON.parse(jsonString);
-    console.log('🚀 ~ file: utilities.js:23 ~ x :', x);
 
     try {
         output = JSON.parse(jsonString);
-        console.log('🚀 ~ file: utilities.js:21 ~ output:', output);
     } catch {
-        console.log('kkp');
         output = {};
     }
 
+    console.log('🚀 ~ file: utilities.js:21 ~ output:', output);
     return output;
 };
 
