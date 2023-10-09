@@ -241,7 +241,74 @@ handler._checks.get = (requestProperties, callback) => {
 };
 
 handler._checks.put = (requestProperties, callback) => {
-    callback(400);
+    const id =
+        typeof requestProperties.queryStringObject.id === 'string' &&
+        requestProperties.queryStringObject.id.trim().length === 11
+            ? requestProperties.queryStringObject.id
+            : false;
+
+    const protocol =
+        typeof requestProperties.body.protocol === 'string' &&
+        ['http', 'https'].includes(requestProperties.body.protocol)
+            ? requestProperties.body.protocol
+            : false;
+    const url =
+        typeof requestProperties.body.url === 'string' &&
+        requestProperties.body.url.trim().length > 0
+            ? requestProperties.body.url
+            : false;
+    const method =
+        typeof requestProperties.body.method === 'string' &&
+        ['GET', 'POST', 'PUT', 'DELETE'].includes(requestProperties.body.method)
+            ? requestProperties.body.method
+            : false;
+
+    const successCodes =
+        typeof requestProperties.body.successCodes === 'object' &&
+        requestProperties.body.successCodes instanceof Array
+            ? requestProperties.body.successCodes
+            : false;
+
+    const timeOutSeconds =
+        typeof requestProperties.body.timeOutSeconds === 'number' &&
+        requestProperties.body.timeOutSeconds % 1 === 0 &&
+        requestProperties.body.timeOutSeconds >= 1 &&
+        requestProperties.body.timeOutSeconds <= 5
+            ? requestProperties.body.timeOutSeconds
+            : false;
+
+    const obj = {
+        protocol,
+        url,
+        method,
+        successCodes,
+        timeOutSeconds,
+    };
+
+    console.log('🚀 ~ file: checkHandler.js:287 ~ obj:', obj);
+
+    if (id) {
+        if (protocol || url || method || successCodes || timeOutSeconds) {
+            data.read('checks', id, (err, checkData) => [
+                if (!err && checkData) {
+                    data.
+                }
+                else {
+                    callback(500, {
+                        error : 'There was problem in the server side'
+                    })
+            }
+            ])
+        } else {
+            callback(400, {
+                error : 'You must provide at least one field to update',
+            })
+        }
+    } else {
+        callback(400, {
+            error: 'You have problem in your request',
+        });
+    }
 };
 
 handler._checks.delete = (requestProperties, callback) => {
