@@ -12,12 +12,13 @@ import environment from './helpers/environmentVariables.js';
 import handler from './helpers/handleReqRes.js';
 import notifications from './helpers/notifications.js';
 import data from './lib/data.js';
+
 // App Object - Module Scaffolding
 const app = {};
 // ! To Do : Delete kore dite hobe test korar pore
 // Testing Purpose
-const { sendTwilioSms } = notifications.sendTwilioSms;
-sendTwilioSms('+8801724870810', 'Hello Kishor', (err) => {
+
+notifications.sendTwilioSms('01724870810', 'Hello Kishor', (err) => {
     console.log('THis is the error : ', err);
 });
 
