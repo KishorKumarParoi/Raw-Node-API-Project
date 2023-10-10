@@ -9,28 +9,35 @@
 // dependencies
 import https from 'https';
 import queryString from 'querystring';
-import environmentVariables from './environmentVariables.js';
+import environments from './environmentVariables.js';
+
 // module scaffolding
 const notifications = {};
-const { twilio } = environmentVariables;
 
 // send sms to user using Twilio api
 
 notifications.sendTwilioSms = (phone, message, callback) => {
+    console.log('🚀 ~ file: notifications.js:19 ~ phone:', phone);
     // input validation
-    const userPhone = typeof phone === 'number' && phone.trim().length === 1 ? phone.trim() : false;
+    const userPhone =
+        typeof phone === 'string' && phone.trim().length === 11 ? phone.trim() : false;
     const userMessage =
         typeof message === 'string' && message.trim().length > 0 && message.trim().length <= 1600
             ? message.trim()
             : false;
 
+    console.log('🚀 ~ file: notifications.js:27 ~ userPhone):', userPhone);
+    console.log('🚀 ~ file: notifications.js:27 ~ userMessage:', userMessage);
+
     if (userMessage && userPhone) {
         // configure the request payload
         const payload = {
-            From: twilio.fromPhone,
-            To: `+88${userPhone}`,
+            From: environments.twilio.fromPhone,
             Body: userMessage,
+            To: `+88${userPhone}`,
         };
+
+        console.log('🚀 ~ file: notifications.js:39 ~ environments.twilio:', environments.twilio);
 
         // stringify the payload
         const stringifyPayload = queryString.stringify(payload);
@@ -39,8 +46,8 @@ notifications.sendTwilioSms = (phone, message, callback) => {
         const requestDetails = {
             hostname: 'api.twilio.com',
             method: 'POST',
-            path: `/2010-04-01/Accounts/${twilio.accoutSid}/Messages.json`,
-            auth: `${twilio.accoutSid}:${twilio.authToken}`,
+            path: `/2010-04-01/Accounts/${environments.twilio.accountSid}/Messages.json`,
+            auth: `${environments.twilio.accountSid}:${environments.twilio.authToken}`,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
