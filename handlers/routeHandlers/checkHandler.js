@@ -350,7 +350,48 @@ handler._checks.put = (requestProperties, callback) => {
 };
 
 handler._checks.delete = (requestProperties, callback) => {
-    callback(300);
+    const id =
+        typeof requestProperties.queryStringObject.id === 'string' &&
+        requestProperties.queryStringObject.id.trim().length === 11
+            ? requestProperties.queryStringObject.id
+            : false;
+
+    if (id) {
+        // lookup the user
+        data.read('checks', id, (err, checkData) => {
+            if (!err && checkData) {
+                const checkObject = { ...utilities.parseJSON(checkData) };
+                const token =
+                    typeof requestProperties.headersObject.token === 'string'
+                        ? requestProperties.headersObject.token
+                        : false;
+
+                tokenHandler._token.verify(token, checkObject.userPhone, (tokenIsValid) => {
+                    if (tokenIsValid) {
+                        data.delete('checks', id, (err2) => {
+                            if (!err2) {
+                                callback(200, {
+                                    mesage: 'Check was succesfully deleted',
+                                });
+                            } else {
+                                callback(500, {
+                                    error: "Can't delete check",
+                                });
+                            }
+                        });
+                    } else {
+                        callback(500, {
+                            error: 'There was problem from server side',
+                        });
+                    }
+                });
+            } else {
+                callback(400, {
+                    error: 'There was problem in your request',
+                });
+            }
+        });
+    }
 };
 
 export default handler;
