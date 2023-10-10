@@ -8,6 +8,7 @@
 
 // dependencies
 // import https from 'https';
+import environmentVariables from './environmentVariables.js';
 
 // module scaffolding
 const notifications = {};
@@ -23,6 +24,15 @@ notifications.sendTwilioSms = (phone, message, callback) => {
             : false;
 
     if (userMessage && userPhone) {
+        // configure the request payload
+        const payload = {
+            From: environmentVariables.twilio.fromPhone;
+            To: `+88${userPhone}`,
+            Body : userMessage
+        }
+
+        // stringify the payload
+        
     } else {
         callback('Given parameters were missing or invalid!');
     }
