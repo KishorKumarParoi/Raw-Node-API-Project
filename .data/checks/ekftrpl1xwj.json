@@ -1,9 +1,0 @@
-{
-  "id": "ekftrpl1xwj",
-  "userPhone": "01724714159",
-  "protocol": "https",
-  "url": "google.com",
-  "method": "PUT",
-  "successCodes": [201, 203, 204],
-  "timeOutSeconds": 2
-}
