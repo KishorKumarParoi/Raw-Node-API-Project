@@ -7,7 +7,7 @@
  */
 
 // dependencies
-// import https from 'https';
+import https from 'https';
 import queryString from 'querystring';
 import environmentVariables from './environmentVariables.js';
 // module scaffolding
@@ -46,6 +46,23 @@ notifications.sendTwilioSms = (phone, message, callback) => {
             },
         };
         console.log('🚀 ~ file: notifications.js:43 ~ requestDetails:', requestDetails);
+
+        // instantiate the request object
+        const req = https.request(requestDetails, (res) => {
+            // get the status of the sent request
+            const status = res.statusCode;
+            // callback successfully if the request went through
+            if (status === 200 || status === 201) {
+                callback(false);
+            } else {
+                callback(`Status code returned ${status}`);
+            }
+        });
+        req.on('error', (e) => {
+            callback(e);
+        });
+        req.write(stringifyPayload);
+        req.end();
     } else {
         callback('Given parameters were missing or invalid!');
     }
