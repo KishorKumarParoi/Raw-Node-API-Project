@@ -8,10 +8,11 @@
 
 // dependencies
 // import https from 'https';
+import queryString from 'querystring';
 import environmentVariables from './environmentVariables.js';
-
 // module scaffolding
 const notifications = {};
+const { twilio } = environmentVariables;
 
 // send sms to user using Twilio api
 
@@ -26,13 +27,25 @@ notifications.sendTwilioSms = (phone, message, callback) => {
     if (userMessage && userPhone) {
         // configure the request payload
         const payload = {
-            From: environmentVariables.twilio.fromPhone;
+            From: twilio.fromPhone,
             To: `+88${userPhone}`,
-            Body : userMessage
-        }
+            Body: userMessage,
+        };
 
         // stringify the payload
-        
+        const stringifyPayload = queryString.stringify(payload);
+        console.log('🚀 ~ file: notifications.js:37 ~ stringifyPayload:', stringifyPayload);
+
+        const requestDetails = {
+            hostname: 'api.twilio.com',
+            method: 'POST',
+            path: `/2010-04-01/Accounts/${twilio.accoutSid}/Messages.json`,
+            auth: `${twilio.accoutSid}:${twilio.authToken}`,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        };
+        console.log('🚀 ~ file: notifications.js:43 ~ requestDetails:', requestDetails);
     } else {
         callback('Given parameters were missing or invalid!');
     }
