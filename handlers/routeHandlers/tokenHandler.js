@@ -217,6 +217,7 @@ handler._token.verify = (id, phone, callback) => {
             console.log('🚀 ~ file: tokenHandler.js:211 ~ data.read ~ Date.now():', Date.now());
 
             if (tokenData.phone === phone && tokenData.expires > Date.now()) {
+                console.log('OK');
                 callback(true);
             } else {
                 console.log('Paroi');

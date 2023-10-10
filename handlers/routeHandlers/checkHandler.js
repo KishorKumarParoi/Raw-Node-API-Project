@@ -298,7 +298,8 @@ handler._checks.put = (requestProperties, callback) => {
                             : false;
 
                     tokenHandler._token.verify(token, checkObject.userPhone, (tokenIsValid) => {
-                        if (!tokenIsValid) {
+                        if (tokenIsValid) {
+                            console.log('Hello');
                             if (protocol) {
                                 checkObject.protocol = protocol;
                             }
@@ -317,7 +318,7 @@ handler._checks.put = (requestProperties, callback) => {
                             // store data to database
                             data.update('checks', id, checkObject, (err2) => {
                                 if (!err2) {
-                                    callback(2000, checkObject);
+                                    callback(200, checkObject);
                                 } else {
                                     callback(500, {
                                         error: 'There was error from sever side',
