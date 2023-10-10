@@ -384,14 +384,20 @@ handler._checks.delete = (requestProperties, callback) => {
                                             id
                                         );
 
-                                        const index = userObject.checks.indexOf(id);
+                                        const userChecks =
+                                            typeof userObject.checks === 'object' &&
+                                            userObject.checks instanceof Array
+                                                ? userObject.checks
+                                                : false;
+
+                                        const index = userChecks.indexOf(id);
                                         console.log(
                                             '🚀 ~ file: checkHandler.js:386 ~ data.read ~ index:',
                                             index
                                         );
 
                                         if (index >= 0) {
-                                            userObject.checks.splice(index, 1);
+                                            userChecks.splice(index, 1);
 
                                             console.log(
                                                 '🚀 ~ file: checkHandler.js:393 ~ data.read ~ userObject:',
