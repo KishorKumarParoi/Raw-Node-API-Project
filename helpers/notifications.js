@@ -58,16 +58,20 @@ notifications.sendTwilioSms = (phone, message, callback) => {
         const req = https.request(requestDetails, (res) => {
             // get the status of the sent request
             const status = res.statusCode;
+            console.log('🚀 ~ file: notifications.js:50 ~ status:', status);
+
             // callback successfully if the request went through
             if (status === 200 || status === 201) {
                 callback(false);
             } else {
-                callback(`Status code returned ${status}`);
+                callback(`Status code returned was ${status}`);
             }
         });
+
         req.on('error', (e) => {
             callback(e);
         });
+
         req.write(stringifyPayload);
         req.end();
     } else {
