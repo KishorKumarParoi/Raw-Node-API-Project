@@ -289,20 +289,47 @@ handler._checks.put = (requestProperties, callback) => {
 
     if (id) {
         if (protocol || url || method || successCodes || timeOutSeconds) {
-            data.read('checks', id, (err, checkData) => [
+            data.read('checks', id, (err, checkData) => {
                 if (!err && checkData) {
-                    data.
-                }
-                else {
+                    const checkObject = { ...utilities.parseJSON(checkData) };
+                    const token =
+                        typeof requestProperties.headersObject.token === 'string'
+                            ? requestProperties.headersObject.token
+                            : false;
+
+                    tokenHandler._token.verify(token, checkObject.userPhone, (tokenIsValid) => {
+                        if (!tokenIsValid) {
+                            if (protocol) {
+                                checkObject.protocol = protocol;
+                            }
+                            if (url) {
+                                checkObject.url = url;
+                            }
+                            if (method) {
+                                checkObject.method = method;
+                            }
+                            if (successCodes) {
+                                checkObject.successCodes = successCodes;
+                            }
+                            if (timeOutSeconds) {
+                                checkObject.timeOutSeconds = timeOutSeconds;
+                            }
+                        } else {
+                            callback(403, {
+                                error: 'Authentication Error in verifying token',
+                            });
+                        }
+                    });
+                } else {
                     callback(500, {
-                        error : 'There was problem in the server side'
-                    })
-            }
-            ])
+                        error: 'There was problem in the server side',
+                    });
+                }
+            });
         } else {
             callback(400, {
-                error : 'You must provide at least one field to update',
-            })
+                error: 'You must provide at least one field to update',
+            });
         }
     } else {
         callback(400, {
