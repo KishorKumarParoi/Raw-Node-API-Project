@@ -356,6 +356,8 @@ handler._checks.delete = (requestProperties, callback) => {
             ? requestProperties.queryStringObject.id
             : false;
 
+    console.log('🚀 ~ file: checkHandler.js:354 ~ handler._checks.delete ~ id:', id);
+
     if (id) {
         // lookup the user
         data.read('checks', id, (err, checkData) => {
@@ -365,77 +367,86 @@ handler._checks.delete = (requestProperties, callback) => {
                     typeof requestProperties.headersObject.token === 'string'
                         ? requestProperties.headersObject.token
                         : false;
-
-                tokenHandler._token.verify(token, checkObject.userPhone, (tokenIsValid) => {
-                    if (tokenIsValid) {
-                        data.delete('checks', id, (err2) => {
-                            if (!err2) {
-                                data.read('users', checkObject.userPhone, (err3, userData) => {
-                                    const userObject = { ...utilities.parseJSON(userData) };
-                                    console.log(
-                                        '🚀 ~ file: checkHandler.js:375 ~ data.read ~ userObject:',
-                                        userObject
-                                    );
-
-                                    console.log(
-                                        '🚀 ~ file: checkHandler.js:380 ~ data.read ~ id:',
-                                        id
-                                    );
-
-                                    const index = userObject.checks.indexOf(id);
-                                    console.log(
-                                        '🚀 ~ file: checkHandler.js:386 ~ data.read ~ index:',
-                                        index
-                                    );
-
-                                    if (index >= 0) {
-                                        userObject.checks.splice(index, 1);
-
+                if (token) {
+                    tokenHandler._token.verify(token, checkObject.userPhone, (tokenIsValid) => {
+                        if (tokenIsValid) {
+                            data.delete('checks', id, (err2) => {
+                                if (!err2) {
+                                    data.read('users', checkObject.userPhone, (err3, userData) => {
+                                        const userObject = { ...utilities.parseJSON(userData) };
                                         console.log(
-                                            '🚀 ~ file: checkHandler.js:393 ~ data.read ~ userObject:',
+                                            '🚀 ~ file: checkHandler.js:375 ~ data.read ~ userObject:',
                                             userObject
                                         );
 
-                                        // now update the user
-                                        data.update(
-                                            'users',
-                                            userObject.phone,
-                                            userObject,
-                                            (err4) => {
-                                                if (!err4) {
-                                                    callback(200, {
-                                                        mesage: 'Check was succesfully deleted',
-                                                    });
-                                                } else {
-                                                    callback(400, {
-                                                        error: 'There was problem in updating',
-                                                    });
-                                                }
-                                            }
+                                        console.log(
+                                            '🚀 ~ file: checkHandler.js:380 ~ data.read ~ id:',
+                                            id
                                         );
-                                    } else {
-                                        callback(400, {
-                                            error: `There was no user having token ${id}`,
-                                        });
-                                    }
-                                });
-                            } else {
-                                callback(500, {
-                                    error: "Can't delete check",
-                                });
-                            }
-                        });
-                    } else {
-                        callback(500, {
-                            error: 'There was problem from server side',
-                        });
-                    }
-                });
+
+                                        const index = userObject.checks.indexOf(id);
+                                        console.log(
+                                            '🚀 ~ file: checkHandler.js:386 ~ data.read ~ index:',
+                                            index
+                                        );
+
+                                        if (index >= 0) {
+                                            userObject.checks.splice(index, 1);
+
+                                            console.log(
+                                                '🚀 ~ file: checkHandler.js:393 ~ data.read ~ userObject:',
+                                                userObject
+                                            );
+
+                                            // now update the user
+                                            data.update(
+                                                'users',
+                                                userObject.phone,
+                                                userObject,
+                                                (err4) => {
+                                                    if (!err4) {
+                                                        callback(200, {
+                                                            mesage: 'Check was succesfully deleted',
+                                                        });
+                                                    } else {
+                                                        callback(400, {
+                                                            error: 'There was problem in updating',
+                                                        });
+                                                    }
+                                                }
+                                            );
+                                        } else {
+                                            callback(400, {
+                                                error: `There was no user having token ${id}`,
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    callback(500, {
+                                        error: "Can't delete check",
+                                    });
+                                }
+                            });
+                        } else {
+                            callback(500, {
+                                error: 'There was problem from server side',
+                            });
+                        }
+                    });
+                } else {
+                    callback(403, {
+                        error: "Token wasn't valid",
+                    });
+                }
             } else {
                 callback(400, {
                     error: 'There was problem in your request',
                 });
             }
+        });
+    } else {
+        callback(403, {
+            error: "Id wasn't valid",
         });
     }
 };
