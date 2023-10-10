@@ -27,3 +27,5 @@ notifications.sendTwilioSms = (phone, message, callback) => {
         callback('Given parameters were missing or invalid!');
     }
 };
+
+export default notifications;
