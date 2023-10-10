@@ -314,6 +314,16 @@ handler._checks.put = (requestProperties, callback) => {
                             if (timeOutSeconds) {
                                 checkObject.timeOutSeconds = timeOutSeconds;
                             }
+                            // store data to database
+                            data.update('checks', id, checkObject, (err2) => {
+                                if (!err2) {
+                                    callback(2000, checkObject);
+                                } else {
+                                    callback(500, {
+                                        error: 'There was error from sever side',
+                                    });
+                                }
+                            });
                         } else {
                             callback(403, {
                                 error: 'Authentication Error in verifying token',
